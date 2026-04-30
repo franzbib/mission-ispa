@@ -4,7 +4,7 @@ import type { Mission, Choice } from '../../types/mission';
 import { useGameStore } from '../../engine/gameState';
 import { audio } from '../../engine/audioEngine';
 
-const unsupportedMissionTypes = ['ordering', 'inventorySelection', 'guidedCloze', 'consequenceChoice'] as const;
+const unsupportedMissionTypes = ['inventorySelection', 'guidedCloze', 'consequenceChoice'] as const;
 
 interface Props {
   mission: Mission;
@@ -15,6 +15,7 @@ export default function MissionModal({ mission, onClose }: Props) {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [selectedChoiceId, setSelectedChoiceId] = useState<string | null>(null);
   const [selectedChoicesIds, setSelectedChoicesIds] = useState<string[]>([]);
+  const [orderingChoiceIds, setOrderingChoiceIds] = useState<string[]>(() => (mission.choices || mission.steps?.[0]?.choices || []).map(choice => choice.id));
   const [showFeedback, setShowFeedback] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState("");
@@ -37,6 +38,13 @@ export default function MissionModal({ mission, onClose }: Props) {
 
   const getExpectedMultiSelectAnswers = () => {
     const correctIds = mission.correctSelection || [];
+    return correctIds
+      .map(id => choices.find(choice => choice.id === id)?.text)
+      .filter((text): text is string => Boolean(text));
+  };
+
+  const getExpectedOrderingAnswers = () => {
+    const correctIds = currentStep?.correctOrder || mission.correctOrder || [];
     return correctIds
       .map(id => choices.find(choice => choice.id === id)?.text)
       .filter((text): text is string => Boolean(text));
@@ -75,6 +83,14 @@ export default function MissionModal({ mission, onClose }: Props) {
          feedbackText = selectedChoice.feedback || (correct ? "C'est exact." : "Non, essayez encore.");
          effectsToApply = selectedChoice.effects;
        }
+    } else if (mission.missionType === 'ordering') {
+       const correctOrder = currentStep?.correctOrder || mission.correctOrder || [];
+       correct = correctOrder.length > 0 && orderingChoiceIds.length === correctOrder.length && orderingChoiceIds.every((id, index) => id === correctOrder[index]);
+       const expectedAnswers = getExpectedOrderingAnswers();
+       feedbackText = correct
+         ? "C'est exact ! L'ordre est correct."
+         : `L'ordre n'est pas encore correct. Ordre attendu : ${expectedAnswers.join(' > ')}.`;
+       effectsToApply = correct ? (mission.successEffects || []) : (mission.failureEffects || [{ target: 'stress', amount: 5 }]);
     } else if (mission.missionType === 'documentComparison') {
        selectedChoice = choices.find(c => c.id === actualChoiceId) || null;
        if (selectedChoice) {
@@ -138,6 +154,7 @@ export default function MissionModal({ mission, onClose }: Props) {
     if (currentStepIndex < steps.length - 1) {
       setCurrentStepIndex(prev => prev + 1);
       setSelectedChoiceId(null);
+      setOrderingChoiceIds(steps[currentStepIndex + 1]?.choices.map(choice => choice.id) || []);
       setFeedbackMessage("");
       setShowFeedback(false);
     } else {
@@ -150,6 +167,19 @@ export default function MissionModal({ mission, onClose }: Props) {
     setSelectedChoicesIds(prev => 
       prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
     );
+  };
+
+  const moveOrderingChoice = (id: string, direction: -1 | 1) => {
+    if (showFeedback) return;
+    setOrderingChoiceIds(prev => {
+      const currentIndex = prev.indexOf(id);
+      const targetIndex = currentIndex + direction;
+      if (currentIndex < 0 || targetIndex < 0 || targetIndex >= prev.length) return prev;
+
+      const next = [...prev];
+      [next[currentIndex], next[targetIndex]] = [next[targetIndex], next[currentIndex]];
+      return next;
+    });
   };
 
   const getDocumentStyle = (style?: string) => {
@@ -225,6 +255,60 @@ export default function MissionModal({ mission, onClose }: Props) {
           className="px-8 py-3 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-xl transition-colors"
         >
           Valider
+        </button>
+      )}
+    </div>
+  );
+
+  const renderOrdering = () => (
+    <div className="flex flex-col gap-3">
+      {orderingChoiceIds.map((choiceId, index) => {
+        const choice = choices.find(item => item.id === choiceId);
+        if (!choice) return null;
+
+        return (
+          <div
+            key={choice.id}
+            className={`flex items-center gap-3 p-3 rounded-xl border transition-colors ${
+              showFeedback
+                ? 'bg-slate-800/30 border-slate-700/30 text-slate-400'
+                : 'bg-slate-700/50 border-slate-600 text-slate-200'
+            }`}
+          >
+            <span className="w-7 h-7 shrink-0 rounded-full bg-slate-900/70 text-slate-300 text-xs font-bold flex items-center justify-center">
+              {index + 1}
+            </span>
+            <span className="flex-1 text-sm md:text-base leading-snug">{choice.text}</span>
+            <div className="flex gap-1 shrink-0">
+              <button
+                type="button"
+                onClick={() => moveOrderingChoice(choice.id, -1)}
+                disabled={showFeedback || index === 0}
+                className="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-600 text-slate-200 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                aria-label="Monter ce choix"
+              >
+                ↑
+              </button>
+              <button
+                type="button"
+                onClick={() => moveOrderingChoice(choice.id, 1)}
+                disabled={showFeedback || index === orderingChoiceIds.length - 1}
+                className="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-600 text-slate-200 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                aria-label="Descendre ce choix"
+              >
+                ↓
+              </button>
+            </div>
+          </div>
+        );
+      })}
+      {!showFeedback && (
+        <button
+          onClick={() => handleValidate()}
+          disabled={orderingChoiceIds.length === 0}
+          className="mt-4 px-8 py-3 bg-ispa-accent hover:bg-amber-500 text-white font-bold rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Valider l'ordre
         </button>
       )}
     </div>
@@ -318,6 +402,8 @@ export default function MissionModal({ mission, onClose }: Props) {
                 
                 {mission.missionType === 'multiSelect'
                   ? renderMultiSelect()
+                  : mission.missionType === 'ordering'
+                    ? renderOrdering()
                   : isUnsupportedMissionType
                     ? renderUnsupportedMission()
                     : renderSingleChoice()}
