@@ -1,12 +1,24 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore } from '../../engine/gameState';
 import { NARRATIVE_LEVELS, MISSION_GROUPS } from '../../data/narrativeLevels';
+import { MISSIONS } from '../../data/missions';
+import { getMissingRequirementsLabel, isMissionAvailable } from '../../engine/unlockEngine';
 
 export default function CharacterModal({ onClose }: { onClose: () => void }) {
-  const { name, profile, level, stats, currentNarrativeLevel, completedMissions } = useGameStore();
+  const gameState = useGameStore();
+  const { name, profile, level, stats, currentNarrativeLevel, completedMissions } = gameState;
   const currentLevel = NARRATIVE_LEVELS[currentNarrativeLevel];
   const activeGroup = currentLevel?.mainMissionGroups[0] ? MISSION_GROUPS[currentLevel.mainMissionGroups[0]] : null;
   const completedInGroup = activeGroup ? activeGroup.missionIds.filter(id => completedMissions.includes(id)).length : 0;
+  const installationGroup = MISSION_GROUPS['installation-ispa'];
+  const installationMissions = MISSIONS.filter(mission => mission.missionGroupId === 'installation-ispa');
+  const requiredInstallationCount = installationGroup?.requiredCompletedCount || installationMissions.length;
+  const completedInstallationCount = installationGroup
+    ? installationGroup.missionIds.filter(id => completedMissions.includes(id)).length
+    : installationMissions.filter(mission => completedMissions.includes(mission.id)).length;
+  const displayedCompletedInstallationCount = Math.min(completedInstallationCount, requiredInstallationCount);
+  const nodeMission = MISSIONS.find(mission => mission.id === 'm8_validation_dossier');
+  const hasReachedLevel2 = currentNarrativeLevel >= 2;
 
   const getStatLabel = (key: string) => {
     const labels: Record<string, string> = {
@@ -20,6 +32,26 @@ export default function CharacterModal({ onClose }: { onClose: () => void }) {
     return labels[key] || key;
   };
 
+  const isNodeMission = (missionId: string) => {
+    const mission = MISSIONS.find(item => item.id === missionId);
+    return mission?.isNodeMission === true || mission?.isNodeQuest === true || mission?.narrativePriority === 'node';
+  };
+
+  const getMissionStatus = (missionId: string) => {
+    const mission = MISSIONS.find(item => item.id === missionId);
+    if (!mission) return 'verrouillée';
+    if (completedMissions.includes(mission.id)) return 'terminée';
+    return isMissionAvailable(mission, gameState) ? 'disponible' : 'verrouillée';
+  };
+
+  const nodeMissionStatus = nodeMission
+    ? completedMissions.includes(nodeMission.id)
+      ? 'terminée'
+      : isMissionAvailable(nodeMission, gameState)
+        ? 'à faire'
+        : 'verrouillée'
+    : 'verrouillée';
+
   return (
     <AnimatePresence>
       <motion.div 
@@ -30,7 +62,7 @@ export default function CharacterModal({ onClose }: { onClose: () => void }) {
         <motion.div 
           initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
           onClick={e => e.stopPropagation()}
-          className="w-full max-w-md bg-slate-800 border border-slate-600 p-8 rounded-3xl flex flex-col gap-6 shadow-2xl"
+          className="w-full max-w-lg max-h-[90vh] overflow-y-auto bg-slate-800 border border-slate-600 p-6 md:p-8 rounded-3xl flex flex-col gap-6 shadow-2xl"
         >
           <div className="flex justify-between items-center border-b border-slate-700 pb-4">
             <h2 className="text-2xl font-serif text-white">Profil Étudiant</h2>
@@ -62,6 +94,65 @@ export default function CharacterModal({ onClose }: { onClose: () => void }) {
                 </div>
               </div>
             )}
+          </div>
+
+          <div className="bg-slate-900/40 p-4 rounded-xl border border-slate-700/60">
+            <div className="flex flex-col gap-1 mb-4">
+              <h3 className="text-xs font-bold text-amber-500 uppercase tracking-widest">Progression vers le Niveau 2</h3>
+              <p className="text-sm font-semibold text-white">{installationGroup?.title || 'Installation ISPA'}</p>
+              <p className="text-xs text-slate-400">
+                {displayedCompletedInstallationCount} / {requiredInstallationCount} missions nécessaires terminées
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              {installationMissions.map(mission => {
+                const status = getMissionStatus(mission.id);
+                const lockedReason = status === 'verrouillée'
+                  ? getMissingRequirementsLabel(mission.prerequisites, gameState)
+                  : '';
+
+                return (
+                  <div key={mission.id} className="flex flex-col gap-1 rounded-lg border border-slate-700/60 bg-slate-800/60 p-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-slate-100 leading-snug">{mission.title}</p>
+                        {lockedReason && (
+                          <p className="text-[11px] text-slate-500 mt-1 leading-snug">{lockedReason}</p>
+                        )}
+                      </div>
+                      <div className="flex flex-col items-end gap-1 shrink-0">
+                        <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${
+                          status === 'terminée'
+                            ? 'bg-emerald-500/20 text-emerald-400'
+                            : status === 'disponible'
+                              ? 'bg-ispa-accent/20 text-ispa-accent'
+                              : 'bg-slate-700 text-slate-400'
+                        }`}>
+                          {status}
+                        </span>
+                        {isNodeMission(mission.id) && (
+                          <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400">
+                            Mission-nœud
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="mt-4 pt-4 border-t border-slate-700/60">
+              <p className="text-sm text-slate-200">
+                Validation du dossier : <span className="font-bold text-white">{nodeMissionStatus}</span>
+              </p>
+              <p className={`text-xs mt-2 leading-relaxed ${hasReachedLevel2 ? 'text-emerald-300' : 'text-slate-400'}`}>
+                {hasReachedLevel2
+                  ? 'Niveau 2 débloqué : vous pouvez accéder aux cours de FOU, aux certifications et aux nouveaux lieux.'
+                  : 'Terminez au moins 5 missions du groupe Installation ISPA puis validez votre dossier au secrétariat.'}
+              </p>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4 mt-2">
