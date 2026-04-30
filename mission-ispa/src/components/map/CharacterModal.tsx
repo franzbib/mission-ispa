@@ -1,7 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore } from '../../engine/gameState';
 import { NARRATIVE_LEVELS, MISSION_GROUPS } from '../../data/narrativeLevels';
-import { MISSIONS } from '../../data/missions';
 
 export default function CharacterModal({ onClose }: { onClose: () => void }) {
   const { name, profile, level, stats, currentNarrativeLevel, completedMissions } = useGameStore();

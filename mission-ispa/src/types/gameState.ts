@@ -17,6 +17,11 @@ export interface CharacterState {
     reputation: number;
   };
   inventory: string[];
+  unlockedCourses: string[];
+  // Conserved for backward compatibility with older saves and legacy actions.
+  // The current source of truth for location visibility is unlockEngine.ts,
+  // using revealConditions/unlockConditions from locations.ts.
+  unlockedLocations: string[];
   completedMissions: string[];
   currentChapterId: string;
   currentNarrativeLevel: number;

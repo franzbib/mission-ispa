@@ -27,6 +27,7 @@ export default function LocationModal({ locationId, onClose, onSelectMission }: 
     const isCompleted = completedMissions.includes(mission.id);
     const isAvailable = isMissionAvailable(mission, gameState);
     const lockedReason = (!isAvailable && !isCompleted) ? getMissingRequirementsLabel(mission.prerequisites, gameState) : '';
+    const isNodeMission = mission.isNodeMission === true || mission.isNodeQuest === true || mission.narrativePriority === 'node';
 
     return (
       <button 
@@ -39,11 +40,11 @@ export default function LocationModal({ locationId, onClose, onSelectMission }: 
           isCompleted 
             ? 'bg-slate-800/30 border-slate-700 opacity-60 hover:opacity-100 hover:bg-slate-800/50' 
             : isAvailable
-              ? `bg-slate-700/50 border-slate-600 hover:bg-slate-600 hover:shadow-lg hover:-translate-y-0.5 ${mission.isNodeQuest ? 'border-amber-500/50 shadow-[0_0_15px_rgba(245,158,11,0.1)]' : 'hover:border-slate-400'}`
+              ? `bg-slate-700/50 border-slate-600 hover:bg-slate-600 hover:shadow-lg hover:-translate-y-0.5 ${isNodeMission ? 'border-amber-500/50 shadow-[0_0_15px_rgba(245,158,11,0.1)]' : 'hover:border-slate-400'}`
               : 'bg-slate-900/50 border-slate-800 cursor-not-allowed opacity-70'
         }`}
       >
-        {mission.isNodeQuest && isAvailable && (
+        {isNodeMission && isAvailable && (
           <div className="absolute top-0 left-0 w-1 h-full bg-amber-500"></div>
         )}
         
@@ -55,6 +56,11 @@ export default function LocationModal({ locationId, onClose, onSelectMission }: 
              {mission.narrativePriority === 'main' && (
                 <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-500">
                   Principal
+                </span>
+             )}
+             {isNodeMission && (
+                <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400">
+                  Noeud
                 </span>
              )}
              <h4 className={`font-medium ${isCompleted ? 'text-slate-400 line-through' : !isAvailable ? 'text-slate-500' : 'text-slate-100'}`}>

@@ -8,6 +8,7 @@ interface GameStore extends CharacterState {
   updateStat: (stat: keyof CharacterState['stats'], amount: number) => void;
   updateCondition: (condition: keyof CharacterState['conditions'], amount: number) => void;
   unlockLocation: (locationId: string) => void;
+  unlockCourse: (courseId: string) => void;
   completeMission: (missionId: string) => void;
   advanceChapter: (chapterId: string) => void;
   advanceNarrativeLevel: (level: number) => void;
@@ -34,6 +35,9 @@ const initialState: CharacterState = {
     reputation: 0,
   },
   inventory: [],
+  unlockedCourses: [],
+  // Conserved for backward compatibility with older saves and legacy actions.
+  // Location visibility is now derived by unlockEngine.ts from locations.ts conditions.
   unlockedLocations: ['ispa', 'bu', 'ru'], // Lieux par défaut (sera ignoré si calculé via engine, mais on garde pour rétrocompatibilité temporaire)
   completedMissions: [],
   currentChapterId: 'prologue',
@@ -47,7 +51,7 @@ export const useGameStore = create<GameStore>()(
       setName: (name) => set({ name }),
       setProfile: (profile, initialStats) => set({ profile, stats: initialStats }),
       updateStat: (stat, amount) => set((state) => ({
-        stats: { ...state.stats, [stat]: state.stats[stat] + amount }
+        stats: { ...state.stats, [stat]: Math.max(0, Math.min(100, state.stats[stat] + amount)) }
       })),
       updateCondition: (condition, amount) => set((state) => {
         let newValue = state.conditions[condition] + amount;
@@ -57,7 +61,10 @@ export const useGameStore = create<GameStore>()(
         return { conditions: { ...state.conditions, [condition]: newValue } };
       }),
       unlockLocation: (locationId) => set((state) => ({
-        unlockedLocations: [...new Set([...state.unlockedLocations, locationId])]
+        unlockedLocations: [...new Set([...(state.unlockedLocations || []), locationId])]
+      })),
+      unlockCourse: (courseId) => set((state) => ({
+        unlockedCourses: [...new Set([...(state.unlockedCourses || []), courseId])]
       })),
       completeMission: (missionId) => set((state) => {
         // Find mission to check for unlocks (chapter, items, etc)

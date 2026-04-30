@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import type { Mission, Choice, MissionStep } from '../../types/mission';
+import type { Mission, Choice } from '../../types/mission';
 import { useGameStore } from '../../engine/gameState';
 import { audio } from '../../engine/audioEngine';
+
+const unsupportedMissionTypes = ['ordering', 'inventorySelection', 'guidedCloze', 'consequenceChoice'] as const;
 
 interface Props {
   mission: Mission;
@@ -15,12 +17,14 @@ export default function MissionModal({ mission, onClose }: Props) {
   const [selectedChoicesIds, setSelectedChoicesIds] = useState<string[]>([]);
   const [showFeedback, setShowFeedback] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [feedbackMessage, setFeedbackMessage] = useState("");
   const [showTranslation, setShowTranslation] = useState(false);
 
   const completeMission = useGameStore(state => state.completeMission);
   const advanceChapter = useGameStore(state => state.advanceChapter);
   const advanceNarrativeLevel = useGameStore(state => state.advanceNarrativeLevel);
   const addItem = useGameStore(state => state.addItem);
+  const unlockCourse = useGameStore(state => state.unlockCourse);
   const updateStat = useGameStore(state => state.updateStat);
   const updateCondition = useGameStore(state => state.updateCondition);
 
@@ -29,6 +33,14 @@ export default function MissionModal({ mission, onClose }: Props) {
   
   const question = currentStep ? currentStep.question : mission.question;
   const choices = currentStep ? currentStep.choices : (mission.choices || []);
+  const isUnsupportedMissionType = unsupportedMissionTypes.includes(mission.missionType as typeof unsupportedMissionTypes[number]);
+
+  const getExpectedMultiSelectAnswers = () => {
+    const correctIds = mission.correctSelection || [];
+    return correctIds
+      .map(id => choices.find(choice => choice.id === id)?.text)
+      .filter((text): text is string => Boolean(text));
+  };
 
   const handleValidate = (overrideChoiceId?: string) => {
     if (showFeedback) return;
@@ -51,7 +63,10 @@ export default function MissionModal({ mission, onClose }: Props) {
        const correctIds = mission.correctSelection || [];
        const isExactlyCorrect = selectedChoicesIds.length === correctIds.length && selectedChoicesIds.every(id => correctIds.includes(id));
        correct = isExactlyCorrect;
-       feedbackText = correct ? "C'est exact ! Vous avez sélectionné les bonnes informations." : "Ce n'est pas tout à fait ça. Revoyez votre sélection.";
+       const expectedAnswers = getExpectedMultiSelectAnswers();
+       feedbackText = correct
+         ? "C'est exact ! Vous avez s\u00e9lectionn\u00e9 les bonnes informations."
+         : `La s\u00e9lection n'est pas compl\u00e8te ou contient une erreur. R\u00e9ponses attendues : ${expectedAnswers.join(', ')}.`;
        effectsToApply = correct ? (mission.successEffects || []) : (mission.failureEffects || [{ target: 'stress', amount: 5 }]);
     } else if (mission.missionType === 'multiStep') {
        selectedChoice = choices.find(c => c.id === actualChoiceId) || null;
@@ -68,12 +83,13 @@ export default function MissionModal({ mission, onClose }: Props) {
          effectsToApply = selectedChoice.effects;
        }
     } else {
-       // fallback
-       correct = true;
-       feedbackText = "Mission accomplie.";
+       correct = false;
+       feedbackText = "Ce type de mission est pr\u00e9vu mais pas encore impl\u00e9ment\u00e9.";
+       effectsToApply = [];
     }
 
     setIsSuccess(correct);
+    setFeedbackMessage(feedbackText);
     setShowFeedback(true);
 
     if (correct) {
@@ -104,6 +120,9 @@ export default function MissionModal({ mission, onClose }: Props) {
            mission.unlocksWhenCompleted.forEach(reward => {
               if (reward.type === 'giveItem') addItem(reward.itemId);
               if (reward.type === 'advanceNarrativeLevel') advanceNarrativeLevel(reward.level);
+              if (reward.type === 'unlockCourse') unlockCourse(reward.courseId);
+              // Location rewards are currently derived by unlockEngine.ts from
+              // revealConditions/unlockConditions in locations.ts.
            });
         }
         
@@ -119,6 +138,7 @@ export default function MissionModal({ mission, onClose }: Props) {
     if (currentStepIndex < steps.length - 1) {
       setCurrentStepIndex(prev => prev + 1);
       setSelectedChoiceId(null);
+      setFeedbackMessage("");
       setShowFeedback(false);
     } else {
       onClose();
@@ -187,11 +207,24 @@ export default function MissionModal({ mission, onClose }: Props) {
       ))}
       {!showFeedback && (
         <button 
-          onClick={handleValidate}
+          onClick={() => handleValidate()}
           disabled={selectedChoicesIds.length === 0}
           className="mt-4 px-8 py-3 bg-ispa-accent hover:bg-amber-500 text-white font-bold rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Valider ma sélection
+        </button>
+      )}
+    </div>
+  );
+
+  const renderUnsupportedMission = () => (
+    <div className="flex flex-col gap-3">
+      {!showFeedback && (
+        <button
+          onClick={() => handleValidate()}
+          className="px-8 py-3 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-xl transition-colors"
+        >
+          Valider
         </button>
       )}
     </div>
@@ -240,7 +273,7 @@ export default function MissionModal({ mission, onClose }: Props) {
           {/* Header */}
           <div className="h-20 shrink-0 bg-slate-900 flex items-center justify-between px-6 border-b border-slate-700">
             <h2 className="text-xl font-bold font-serif text-white flex items-center gap-3">
-              {mission.type === 'documentComparison' && <svg className="w-5 h-5 text-ispa-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>}
+              {mission.missionType === 'documentComparison' && <svg className="w-5 h-5 text-ispa-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>}
               Mission : {mission.title}
               {mission.missionType === 'multiStep' && <span className="text-sm font-normal text-slate-400 ml-4">Étape {currentStepIndex + 1}/{steps.length}</span>}
             </h2>
@@ -283,7 +316,11 @@ export default function MissionModal({ mission, onClose }: Props) {
                   )}
                 </h3>
                 
-                {mission.missionType === 'multiSelect' ? renderMultiSelect() : renderSingleChoice()}
+                {mission.missionType === 'multiSelect'
+                  ? renderMultiSelect()
+                  : isUnsupportedMissionType
+                    ? renderUnsupportedMission()
+                    : renderSingleChoice()}
 
                 <AnimatePresence>
                   {showFeedback && (
@@ -300,10 +337,7 @@ export default function MissionModal({ mission, onClose }: Props) {
                         )}
                       </h4>
                       <p className="text-slate-200 text-sm mb-4 leading-relaxed">
-                        {mission.missionType === 'singleChoice' || mission.missionType === 'multiStep' || mission.missionType === 'documentComparison'
-                          ? (choices.find(c => c.id === selectedChoiceId)?.feedback || '')
-                          : (isSuccess ? "Excellent choix." : "Les réponses cochées ne sont pas exactement celles attendues.")
-                        }
+                        {feedbackMessage}
                       </p>
                       
                       <div className="flex flex-wrap gap-2 mb-6">

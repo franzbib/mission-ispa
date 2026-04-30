@@ -54,8 +54,7 @@ export function evaluateCondition(condition: UnlockCondition, gameState: Charact
       return getLocationState(condition.locationId, gameState) === 'unlocked' || getLocationState(condition.locationId, gameState) === 'completed';
 
     case 'courseUnlocked':
-      // Not implemented yet in gameState, but we can assume it for later.
-      return true; // Placeholder for course unlocking logic
+      return (gameState.unlockedCourses || []).includes(condition.courseId);
 
     case 'missionsCompletedInGroup': {
        const groupMissions = MISSIONS.filter(m => m.missionGroupId === condition.groupId || m.optionalGroupId === condition.groupId);

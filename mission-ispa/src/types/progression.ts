@@ -9,6 +9,7 @@ export type UnlockCondition =
   | { type: "statAtLeast"; stat: StatName; value: number }
   | { type: "statBelow"; stat: StatName; value: number }
   | { type: "narrativeLevelReached"; level: number }
+  | { type: "chapterReached"; chapterId: string }
   | { type: "locationUnlocked"; locationId: string }
   | { type: "courseUnlocked"; courseId: string }
   | { type: "missionGroupCompleted"; groupId: string; count?: number }
