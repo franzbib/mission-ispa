@@ -65,6 +65,10 @@ export interface LocationData {
   cy: number;
   color: string;
   icon: string;
+  labelOffsetX?: number;
+  labelOffsetY?: number;
+  labelAnchor?: "start" | "middle" | "end";
+  labelPosition?: "top" | "bottom" | "left" | "right";
   descriptionBeforeDiscovery?: string;
   descriptionWhenLocked?: string;
   descriptionWhenUnlocked: string;

@@ -109,31 +109,55 @@ export default function InteractiveMap({ onLocationClick }: { onLocationClick?: 
             )}
 
             {/* Text Label Container */}
-            <g 
-              transform={`translate(0, ${hovered === loc.id ? -55 : -45})`}
-              className={`transition-all duration-300 ${hovered === loc.id ? 'opacity-100' : 'opacity-70'}`}
-            >
-              {/* Text background pill */}
-              <rect 
-                x={-(loc.name.length * 4 + 15)} 
-                y="-14" 
-                width={loc.name.length * 8 + 30} 
-                height="24" 
-                rx="12" 
-                fill="#1e293b" 
-                stroke={isUnlocked ? loc.color : '#475569'}
-                strokeWidth="1.5"
-                opacity="0.9"
-              />
-              <text 
-                y="3" 
-                textAnchor="middle" 
-                fill={isUnlocked ? "#f8fafc" : "#94a3b8"} 
-                className="font-sans font-semibold text-xs tracking-wide"
-              >
-                {loc.name}
-              </text>
-            </g>
+            {(() => {
+              const textWidth = loc.name.length * 8 + 30; // Approx width
+              const anchor = loc.labelAnchor || "middle";
+              
+              const hoverOffset = hovered === loc.id ? -10 : 0;
+              const defaultOffsetY = -45;
+              const offsetX = loc.labelOffsetX || 0;
+              const offsetY = (loc.labelOffsetY !== undefined ? loc.labelOffsetY : defaultOffsetY) + hoverOffset;
+
+              let rectX = -(textWidth / 2);
+              let textX = 0;
+
+              if (anchor === "start") {
+                rectX = -10;
+                textX = 5;
+              } else if (anchor === "end") {
+                rectX = -textWidth + 10;
+                textX = -5;
+              }
+
+              return (
+                <g 
+                  transform={`translate(${offsetX}, ${offsetY})`}
+                  className={`transition-all duration-300 ${hovered === loc.id ? 'opacity-100' : 'opacity-70'}`}
+                >
+                  {/* Text background pill */}
+                  <rect 
+                    x={rectX} 
+                    y="-14" 
+                    width={textWidth} 
+                    height="24" 
+                    rx="12" 
+                    fill="#1e293b" 
+                    stroke={isUnlocked ? loc.color : '#475569'}
+                    strokeWidth="1.5"
+                    opacity="0.9"
+                  />
+                  <text 
+                    x={textX}
+                    y="3" 
+                    textAnchor={anchor} 
+                    fill={isUnlocked ? "#f8fafc" : "#94a3b8"} 
+                    className="font-sans font-semibold text-xs tracking-wide"
+                  >
+                    {loc.name}
+                  </text>
+                </g>
+              );
+            })()}
           </g>
           );
         })}
