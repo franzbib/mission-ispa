@@ -12,7 +12,7 @@ Le joueur incarne un étudiant international arrivant à l'ISPA (Amiens) et doit
 - **Structure des données** :
   - `missions.ts` : Définit toutes les missions, leurs textes et leurs choix.
   - `locations.ts` : Définit les lieux de la carte, leurs coordonnées et leurs conditions de déblocage (cadenas).
-  - `narrativeLevels.ts` : Groupes de missions et niveaux narratifs (Niveau 1, Niveau 2, etc.).
+  - `narrativeLevels.ts` : Groupes de missions et niveaux narratifs (Niveau 1, Niveau 2, etc.). Configure les groupes selon la piste (`Record<PedagogicalTrack, string>`).
   - `items.ts` : Catalogue des objets gagnables par le joueur.
   - `unlockEngine.ts` : Le cœur du moteur gérant les dépendances logiques (prérequis).
   - `gameState.ts` : Le store Zustand (`useGameStore`) stockant le nom, niveau, track pédagogique, stats, inventaire et missions terminées.
@@ -27,16 +27,19 @@ Le joueur incarne un étudiant international arrivant à l'ISPA (Amiens) et doit
    - Accessible via le profil du joueur (fenêtre modale).
    - Affiche les documents débloqués (ex: `liste_pieces`, `carte_etudiant`, `emploi_du_temps`).
    - Le moteur donne les objets via la condition de récompense `giveItem`.
-5. **Niveau 1 Terminé** : Les deux parcours (A2/B1 et B1/B2) ont leur chaîne de missions fonctionnelle jusqu'à la validation du dossier.
+5. **Niveaux 1 et 2 Terminés** : 
+   - Le Niveau 1 (Installation ISPA) est complet pour les pistes A2/B1 et B1/B2.
+   - Le Niveau 2 (Autonomie ISPA) est complet pour les pistes A2/B1 et B1/B2.
+6. **Moteur Track-Aware** : Le composant `CharacterModal.tsx` et les interfaces de `progression.ts` gèrent dynamiquement la piste du joueur sans conditions en dur grâce au typage `Record<PedagogicalTrack, string>`.
 
 ## 4. Règles Cruciales (À ne pas briser)
 - **Typage Strict** : Ne pas bypasser le compilateur TypeScript. Utilisez les interfaces dans `src/types/`. Exécutez `npm run build` après modification.
 - **Séparation des Parcours** : Ne **JAMAIS** faire dépendre un lieu ou une mission A2/B1 d'un ID de mission B1/B2. Utilisez toujours `missionsCompleted` avec le `mode: 'any'` pour les lieux communs (ex: `{ type: "missionsCompleted", missionIds: ["m1", "m1_a2"], mode: "any" }`).
-- **Styles** : Toujours utiliser TailwindCSS. Ne pas ajouter de CSS inline sauf pour des positionnements dynamiques (offsets de la carte).
+- **Composants Dynamiques** : Utilisez la structure `currentLevel.mainMissionGroups[track]` pour récupérer un groupe, plutôt que d'écrire des vérifications statiques `if (track === 'a2-b1')`.
 
-## 5. Prochaines Étapes Envisagées (Roadmap)
-- **La Salle d'Arcade (Niveau 3)** : Création d'un système de mini-jeux internes, dont le "Jeu des Verbes" (composant React isolé).
-- **Système d'Indices** : Permettre au joueur de demander de l'aide lors d'une mission (contre une pénalité de stat).
-- **Poursuite du Scénario** : Remplir davantage le Niveau 2 (Méthodologie, Certifications, etc.).
+## 5. POINT DE REPRISE / PROCHAINE ÉTAPE
+**La prochaine évolution majeure est la construction du NIVEAU 3 : La Salle d'Arcade.**
+- Il s'agira de développer un composant React de mini-jeu "Jeu des Verbes" accessible depuis un nouveau lieu (`salle_jeu`).
+- Le `NARRATIVE_LEVELS[3]` (dans `narrativeLevels.ts`) possède déjà la structure "Track-Aware" prête pour accueillir les IDs des missions de boss/arcade.
 
 *(Fichier mis à jour automatiquement à chaque grande évolution architecturale)*
