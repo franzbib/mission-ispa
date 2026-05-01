@@ -58,6 +58,14 @@ export type LocationVisibilityState = "hidden" | "discovered" | "unlocked" | "co
 
 export type MissionPriority = "main" | "side" | "remediation" | "exploration" | "node";
 
+export interface ItemData {
+  id: string;
+  name: string;
+  description: string;
+  iconType: 'document' | 'key' | 'id-card' | 'book' | 'generic';
+  color?: string;
+}
+
 export interface LocationData {
   id: string;
   name: string;

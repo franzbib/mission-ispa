@@ -209,6 +209,7 @@ export const MISSIONS: Mission[] = [
       }
     ],
     tags: ['B1', 'Restriction', 'Organisation'],
+    unlocksWhenCompleted: [{ type: 'giveItem', itemId: 'emploi_du_temps' }]
   },
   {
     id: 'm6_reglement_absences',
@@ -734,7 +735,8 @@ export const MISSIONS: Mission[] = [
     correctSelection: ["c1", "c3"],
     successEffects: [{ target: "organization", amount: 5 }],
     tags: ["dossier", "A2"],
-    pedagogicalFocus: ["repérer des informations multiples"]
+    pedagogicalFocus: ["repérer des informations multiples"],
+    unlocksWhenCompleted: [{ type: 'giveItem', itemId: 'liste_pieces' }]
   },
   {
     id: "m5_emploi_du_temps_a2",
@@ -763,7 +765,8 @@ export const MISSIONS: Mission[] = [
       { id: "c3", text: "Hortillonnages", isCorrect: false, feedback: "Non, ça c'est l'après-midi.", effects: [] }
     ],
     tags: ["planning", "A2"],
-    pedagogicalFocus: ["lire un emploi du temps simple"]
+    pedagogicalFocus: ["lire un emploi du temps simple"],
+    unlocksWhenCompleted: [{ type: 'giveItem', itemId: 'emploi_du_temps' }]
   },
   {
     id: "m6_reglement_absences_a2",
@@ -854,6 +857,10 @@ export const MISSIONS: Mission[] = [
       { id: "c3", text: "Un livre.", isCorrect: false, feedback: "Non, lisez bien le dernier texte.", effects: [] }
     ],
     tags: ["validation", "A2", "node"],
-    pedagogicalFocus: ["comprendre un dialogue court"]
+    pedagogicalFocus: ["comprendre un dialogue court"],
+    unlocksWhenCompleted: [
+      { type: 'advanceNarrativeLevel', level: 2 },
+      { type: 'giveItem', itemId: 'carte_etudiant' }
+    ]
   }
 ];
