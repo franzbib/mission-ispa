@@ -10,7 +10,14 @@ export const NARRATIVE_LEVELS: Record<number, NarrativeLevel> = {
     entryConditions: [],
     unlockedLocations: ['ispa', 'crous', 'gare'],
     discoveredLocations: [],
-    mainMissionGroups: ['installation-ispa']
+    mainMissionGroups: {
+      'a2-b1': 'installation-ispa-a2-b1',
+      'b1-b2': 'installation-ispa'
+    },
+    nodeMissionId: {
+      'a2-b1': 'm8_validation_dossier_a2',
+      'b1-b2': 'm8_validation_dossier'
+    }
   },
   2: {
     id: 'niveau_2',
@@ -23,7 +30,14 @@ export const NARRATIVE_LEVELS: Record<number, NarrativeLevel> = {
     ],
     unlockedLocations: ['salle_fou', 'certifications', 'multimedia', 'cafe_etudiants', 'bu', 'orientation', 'cathedrale', 'lys_dor'],
     discoveredLocations: [],
-    mainMissionGroups: ['autonomie-ispa']
+    mainMissionGroups: {
+      'a2-b1': 'autonomie-ispa-a2-b1',
+      'b1-b2': 'autonomie-ispa'
+    },
+    nodeMissionId: {
+      'a2-b1': 'm15_fiche_orientation_a2',
+      'b1-b2': 'm15_fiche_orientation'
+    }
   },
   3: {
     id: 'niveau_3',
@@ -33,11 +47,18 @@ export const NARRATIVE_LEVELS: Record<number, NarrativeLevel> = {
     description: 'Après avoir consolidé son autonomie universitaire, l\'étudiant accède à la salle de jeu, un espace où les compétences linguistiques peuvent être travaillées sous forme de défis rapides.',
     entryConditions: [
       { type: 'narrativeLevelReached', level: 2 },
-      { type: 'missionCompleted', missionId: 'm15_fiche_orientation' }
+      { type: 'missionsCompleted', missionIds: ['m15_fiche_orientation', 'm15_fiche_orientation_a2'], mode: 'any' }
     ],
     unlockedLocations: ['salle_jeu'],
     discoveredLocations: [],
-    mainMissionGroups: []
+    mainMissionGroups: {
+      'a2-b1': 'arcade-a2-b1', // Placeholder pour le Niveau 3
+      'b1-b2': 'arcade'
+    },
+    nodeMissionId: {
+      'a2-b1': 'm_arcade_boss_a2',
+      'b1-b2': 'm_arcade_boss'
+    }
   }
 };
 

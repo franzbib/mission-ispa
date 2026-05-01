@@ -15,13 +15,8 @@ export default function CharacterModal({ onClose }: { onClose: () => void }) {
   // Track logic
   const track = gameState.pedagogicalTrack || 'b1-b2';
   
-  let currentGroupId = track === 'a2-b1' ? 'installation-ispa-a2-b1' : 'installation-ispa';
-  let nodeMissionId = track === 'a2-b1' ? 'm8_validation_dossier_a2' : 'm8_validation_dossier';
-
-  if (currentNarrativeLevel >= 2) {
-    currentGroupId = track === 'a2-b1' ? 'autonomie-ispa-a2-b1' : 'autonomie-ispa';
-    nodeMissionId = track === 'a2-b1' ? 'm15_fiche_orientation_a2' : 'm15_fiche_orientation';
-  }
+  const currentGroupId = currentLevel?.mainMissionGroups?.[track] || 'installation-ispa';
+  const nodeMissionId = currentLevel?.nodeMissionId?.[track] || 'm8_validation_dossier';
   
   const currentGroup = MISSION_GROUPS[currentGroupId];
   const currentMissions = MISSIONS.filter(mission => mission.missionGroupId === currentGroupId);

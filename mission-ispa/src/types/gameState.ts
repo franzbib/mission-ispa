@@ -1,10 +1,12 @@
 import type { ArcadeScore } from './arcade';
 
+export type PedagogicalTrack = 'a2-b1' | 'b1-b2';
+
 export interface CharacterState {
   name: string;
   profile: string;
   level: 'A2' | 'B1' | 'B2';
-  pedagogicalTrack?: 'a2-b1' | 'b1-b2';
+  pedagogicalTrack?: PedagogicalTrack;
   stats: {
     comprehension: number;
     grammar: number;

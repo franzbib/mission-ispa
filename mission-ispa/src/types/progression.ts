@@ -1,4 +1,4 @@
-import type { CharacterState } from './gameState';
+import type { CharacterState, PedagogicalTrack } from './gameState';
 
 export type StatName = keyof CharacterState['stats'] | keyof CharacterState['conditions'];
 
@@ -41,7 +41,8 @@ export interface NarrativeLevel {
   entryConditions: UnlockCondition[];
   unlockedLocations: string[];
   discoveredLocations: string[];
-  mainMissionGroups: string[];
+  mainMissionGroups: Record<PedagogicalTrack, string>;
+  nodeMissionId: Record<PedagogicalTrack, string>;
 }
 
 export interface MissionGroup {
