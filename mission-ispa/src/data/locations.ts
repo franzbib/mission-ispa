@@ -26,7 +26,7 @@ export const LOCATIONS: LocationData[] = [
     descriptionWhenLocked: 'Tu dois d\'abord lire le message d\'accueil avant de venir ici.',
     descriptionWhenUnlocked: 'Ici, on valide ton dossier administratif.',
     revealConditions: [],
-    unlockConditions: [{ type: "missionCompleted", missionId: "m1_accueil_delphine" }]
+    unlockConditions: [{ type: "missionsCompleted", missionIds: ["m1_accueil_delphine", "m1_accueil_delphine_a2"], mode: "any" }]
   },
   { 
     id: 'hall', 
@@ -56,7 +56,7 @@ export const LOCATIONS: LocationData[] = [
     descriptionWhenLocked: 'Tu ne sais pas encore dans quelle salle tu as cours.',
     descriptionWhenUnlocked: 'Salle dédiée notamment à la Compréhension Écrite.',
     revealConditions: [],
-    unlockConditions: [{ type: "missionCompleted", missionId: "m4_premier_cours" }]
+    unlockConditions: [{ type: "missionsCompleted", missionIds: ["m4_premier_cours", "m5_emploi_du_temps_a2"], mode: "any" }]
   },
   { 
     id: 'salle_beffroi', 
@@ -71,7 +71,7 @@ export const LOCATIONS: LocationData[] = [
     descriptionWhenLocked: 'Tu ne sais pas encore dans quelle salle tu as cours.',
     descriptionWhenUnlocked: 'Salle dédiée à la Grammaire et à la structure.',
     revealConditions: [],
-    unlockConditions: [{ type: "missionCompleted", missionId: "m4_premier_cours" }]
+    unlockConditions: [{ type: "missionsCompleted", missionIds: ["m4_premier_cours", "m5_emploi_du_temps_a2"], mode: "any" }]
   },
   { 
     id: 'salle_hortillonnages', 
@@ -84,7 +84,7 @@ export const LOCATIONS: LocationData[] = [
     descriptionWhenLocked: 'Tu ne sais pas encore dans quelle salle tu as cours.',
     descriptionWhenUnlocked: 'Anciennement le Labo Langues, salle dédiée à la Phonétique.',
     revealConditions: [],
-    unlockConditions: [{ type: "missionCompleted", missionId: "m4_premier_cours" }]
+    unlockConditions: [{ type: "missionsCompleted", missionIds: ["m4_premier_cours", "m5_emploi_du_temps_a2"], mode: "any" }]
   },
   { 
     id: 'salle_cathedrale', 
@@ -99,7 +99,7 @@ export const LOCATIONS: LocationData[] = [
     descriptionWhenLocked: 'Tu ne sais pas encore dans quelle salle tu as cours.',
     descriptionWhenUnlocked: 'Grande salle pour des cours magistraux ou projets.',
     revealConditions: [],
-    unlockConditions: [{ type: "missionCompleted", missionId: "m4_premier_cours" }]
+    unlockConditions: [{ type: "missionsCompleted", missionIds: ["m4_premier_cours", "m5_emploi_du_temps_a2"], mode: "any" }]
   },
   { 
     id: 'salle_gambetta', 
@@ -112,7 +112,7 @@ export const LOCATIONS: LocationData[] = [
     descriptionWhenLocked: 'Tu ne sais pas encore dans quelle salle tu as cours.',
     descriptionWhenUnlocked: 'Salle de réunion ou d\'examens officiels.',
     revealConditions: [],
-    unlockConditions: [{ type: "missionCompleted", missionId: "m4_premier_cours" }]
+    unlockConditions: [{ type: "missionsCompleted", missionIds: ["m4_premier_cours", "m5_emploi_du_temps_a2"], mode: "any" }]
   },
 
   // ==========================================

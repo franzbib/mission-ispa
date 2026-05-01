@@ -613,7 +613,7 @@ export const MISSIONS: Mission[] = [
     tracks: ["a2-b1"],
     narrativeLevel: 1,
     missionGroupId: "installation-ispa-a2-b1",
-    locationId: "secretariat",
+    locationId: "ispa",
     missionType: "singleChoice",
     type: "mail",
     difficulty: 1,
@@ -659,11 +659,12 @@ export const MISSIONS: Mission[] = [
     tracks: ["a2-b1"],
     narrativeLevel: 1,
     missionGroupId: "installation-ispa-a2-b1",
-    locationId: "salles_cours",
+    locationId: "salle_jules_verne",
     missionType: "singleChoice",
     type: "document",
     difficulty: 1,
     narrativePriority: "main",
+    prerequisites: [{ type: "missionCompleted", missionId: "m5_emploi_du_temps_a2" }],
     narrativeContext: "Le professeur écrit une petite note au tableau.",
     document: {
       title: "Pour lundi",
@@ -710,6 +711,7 @@ export const MISSIONS: Mission[] = [
     type: "document",
     difficulty: 2,
     narrativePriority: "main",
+    prerequisites: [{ type: "missionCompleted", missionId: "m1_accueil_delphine_a2" }],
     narrativeContext: "Vous avez reçu un post-it du secrétariat.",
     document: {
       title: "Dossier",
@@ -746,6 +748,7 @@ export const MISSIONS: Mission[] = [
     type: "document",
     difficulty: 1,
     narrativePriority: "main",
+    prerequisites: [{ type: "missionCompleted", missionId: "m1_accueil_delphine_a2" }],
     narrativeContext: "Vous regardez votre emploi du temps.",
     document: {
       title: "Lundi",
@@ -774,6 +777,7 @@ export const MISSIONS: Mission[] = [
     type: "document",
     difficulty: 2,
     narrativePriority: "main",
+    prerequisites: [{ type: "missionCompleted", missionId: "m1_accueil_delphine_a2" }],
     narrativeContext: "Le règlement de l'école est affiché.",
     document: {
       title: "Règlement",
@@ -802,6 +806,7 @@ export const MISSIONS: Mission[] = [
     type: "mail",
     difficulty: 1,
     narrativePriority: "main",
+    prerequisites: [{ type: "missionCompleted", missionId: "m4_premier_cours_a2" }],
     narrativeContext: "Un camarade de classe vous écrit un SMS.",
     document: {
       title: "Nouveau message",
@@ -832,6 +837,7 @@ export const MISSIONS: Mission[] = [
     narrativePriority: "node",
     isNodeMission: true,
     prerequisites: [
+      { type: "missionCompleted", missionId: "m2_dossier_incomplet_a2" },
       { type: "missionsCompletedInGroup", groupId: "installation-ispa-a2-b1", count: 5 }
     ],
     narrativeContext: "Vous avez tous les documents. Allez voir la secrétaire.",
