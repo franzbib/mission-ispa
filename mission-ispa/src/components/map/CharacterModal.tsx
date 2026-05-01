@@ -14,21 +14,23 @@ export default function CharacterModal({ onClose }: { onClose: () => void }) {
   
   // Track logic
   const track = gameState.pedagogicalTrack || 'b1-b2';
-  const installationGroupId = track === 'a2-b1' ? 'installation-ispa-a2-b1' : 'installation-ispa';
   
-  const activeGroup = currentLevel?.mainMissionGroups[0] ? MISSION_GROUPS[currentLevel.mainMissionGroups[0]] : null;
-  const completedInGroup = activeGroup ? activeGroup.missionIds.filter(id => completedMissions.includes(id)).length : 0;
+  let currentGroupId = track === 'a2-b1' ? 'installation-ispa-a2-b1' : 'installation-ispa';
+  let nodeMissionId = track === 'a2-b1' ? 'm8_validation_dossier_a2' : 'm8_validation_dossier';
+
+  if (currentNarrativeLevel >= 2) {
+    currentGroupId = track === 'a2-b1' ? 'autonomie-ispa-a2-b1' : 'autonomie-ispa';
+    nodeMissionId = track === 'a2-b1' ? 'm15_fiche_orientation_a2' : 'm15_fiche_orientation';
+  }
   
-  const installationGroup = MISSION_GROUPS[installationGroupId];
-  const installationMissions = MISSIONS.filter(mission => mission.missionGroupId === installationGroupId);
-  const requiredInstallationCount = installationGroup?.requiredCompletedCount || installationMissions.length;
-  const completedInstallationCount = installationGroup
-    ? installationGroup.missionIds.filter(id => completedMissions.includes(id)).length
-    : installationMissions.filter(mission => completedMissions.includes(mission.id)).length;
-  const displayedCompletedInstallationCount = Math.min(completedInstallationCount, requiredInstallationCount);
-  const nodeMissionId = track === 'a2-b1' ? 'm8_validation_dossier_a2' : 'm8_validation_dossier';
+  const currentGroup = MISSION_GROUPS[currentGroupId];
+  const currentMissions = MISSIONS.filter(mission => mission.missionGroupId === currentGroupId);
+  const requiredCurrentCount = currentGroup?.requiredCompletedCount || currentMissions.length;
+  const completedCurrentCount = currentGroup
+    ? currentGroup.missionIds.filter(id => completedMissions.includes(id)).length
+    : currentMissions.filter(mission => completedMissions.includes(mission.id)).length;
+  const displayedCompletedCurrentCount = Math.min(completedCurrentCount, requiredCurrentCount);
   const nodeMission = MISSIONS.find(mission => mission.id === nodeMissionId);
-  const hasReachedLevel2 = currentNarrativeLevel >= 2;
 
   const getStatLabel = (key: string) => {
     const labels: Record<string, string> = {
@@ -61,6 +63,8 @@ export default function CharacterModal({ onClose }: { onClose: () => void }) {
         ? 'à faire'
         : 'verrouillée'
     : 'verrouillée';
+
+  const hasReachedNextLevel = currentNarrativeLevel > (currentNarrativeLevel === 1 ? 1 : 2) || completedMissions.includes(nodeMissionId);
 
   return (
     <AnimatePresence>
@@ -115,14 +119,14 @@ export default function CharacterModal({ onClose }: { onClose: () => void }) {
                 <h3 className="text-xs font-bold text-amber-500 uppercase tracking-widest mb-1">{currentLevel?.title} : {currentLevel?.subtitle}</h3>
                 <p className="text-sm text-slate-300 italic mb-3">{currentLevel?.description}</p>
                 
-                {activeGroup && (
+                {currentGroup && (
                   <div className="mt-3 pt-3 border-t border-slate-600/50">
                     <div className="flex justify-between items-center mb-1">
-                      <span className="text-xs text-slate-400 font-bold uppercase">{activeGroup.title}</span>
-                      <span className="text-xs font-bold text-ispa-accent">{completedInGroup} / {activeGroup.requiredCompletedCount}</span>
+                      <span className="text-xs text-slate-400 font-bold uppercase">{currentGroup.title}</span>
+                      <span className="text-xs font-bold text-ispa-accent">{completedCurrentCount} / {requiredCurrentCount}</span>
                     </div>
                     <div className="w-full bg-slate-800 rounded-full h-1.5 mt-1 overflow-hidden">
-                      <div className="bg-ispa-accent h-1.5 rounded-full transition-all duration-500" style={{ width: `${Math.min(100, (completedInGroup / activeGroup.requiredCompletedCount) * 100)}%` }}></div>
+                      <div className="bg-ispa-accent h-1.5 rounded-full transition-all duration-500" style={{ width: `${Math.min(100, (completedCurrentCount / requiredCurrentCount) * 100)}%` }}></div>
                     </div>
                   </div>
                 )}
@@ -131,16 +135,16 @@ export default function CharacterModal({ onClose }: { onClose: () => void }) {
               <div className="bg-slate-900/40 p-4 rounded-xl border border-slate-700/60">
                 <div className="flex flex-col gap-1 mb-4">
                   <h3 className="text-xs font-bold text-amber-500 uppercase tracking-widest">
-                    Progression vers le Niveau 2 — {track === 'a2-b1' ? 'Parcours A2/B1' : 'Parcours B1/B2'}
+                    Progression vers le Niveau {currentNarrativeLevel + 1} — {track === 'a2-b1' ? 'Parcours A2/B1' : 'Parcours B1/B2'}
                   </h3>
-                  <p className="text-sm font-semibold text-white">{installationGroup?.title || 'Installation ISPA'}</p>
+                  <p className="text-sm font-semibold text-white">{currentGroup?.title || 'Installation ISPA'}</p>
                   <p className="text-xs text-slate-400">
-                    {displayedCompletedInstallationCount} / {requiredInstallationCount} missions nécessaires terminées
+                    {displayedCompletedCurrentCount} / {requiredCurrentCount} missions nécessaires terminées
                   </p>
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  {installationMissions.map(mission => {
+                  {currentMissions.map(mission => {
                     const status = getMissionStatus(mission.id);
                     const lockedReason = status === 'verrouillée'
                       ? getMissingRequirementsLabel(mission.prerequisites, gameState)
@@ -179,12 +183,12 @@ export default function CharacterModal({ onClose }: { onClose: () => void }) {
 
                 <div className="mt-4 pt-4 border-t border-slate-700/60">
                   <p className="text-sm text-slate-200">
-                    Validation du dossier : <span className="font-bold text-white">{nodeMissionStatus}</span>
+                    Mission nœud ({nodeMission?.title}) : <span className="font-bold text-white">{nodeMissionStatus}</span>
                   </p>
-                  <p className={`text-xs mt-2 leading-relaxed ${hasReachedLevel2 ? 'text-emerald-300' : 'text-slate-400'}`}>
-                    {hasReachedLevel2
-                      ? 'Niveau 2 débloqué : vous pouvez accéder aux cours de FOU, aux certifications et aux nouveaux lieux.'
-                      : 'Terminez au moins 5 missions du groupe Installation ISPA puis validez votre dossier au secrétariat.'}
+                  <p className={`text-xs mt-2 leading-relaxed ${hasReachedNextLevel ? 'text-emerald-300' : 'text-slate-400'}`}>
+                    {hasReachedNextLevel
+                      ? `Félicitations, vous avez débloqué le Niveau ${currentNarrativeLevel + 1} !`
+                      : `Terminez au moins ${requiredCurrentCount} missions du groupe puis validez la mission-nœud pour progresser.`}
                   </p>
                 </div>
               </div>

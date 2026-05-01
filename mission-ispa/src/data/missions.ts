@@ -862,5 +862,183 @@ export const MISSIONS: Mission[] = [
       { type: 'advanceNarrativeLevel', level: 2 },
       { type: 'giveItem', itemId: 'carte_etudiant' }
     ]
+  },
+
+  // ============================================================================
+  // PARCOURS A2/B1 - NIVEAU 2
+  // ============================================================================
+  {
+    id: "m9_introduction_fou_a2",
+    title: "Le cours de FOU",
+    level: "A2",
+    tracks: ["a2-b1"],
+    narrativeLevel: 2,
+    missionGroupId: "autonomie-ispa-a2-b1",
+    locationId: "salle_fou",
+    missionType: "singleChoice",
+    type: "document",
+    difficulty: 2,
+    narrativePriority: "main",
+    narrativeContext: "Margaux vous donne un document d'information sur les cours de méthodologie.",
+    document: {
+      title: "Information FOU",
+      sourceType: "Feuille",
+      body: "Bonjour,\nLe cours de Français sur Objectif Universitaire (FOU) commence aujourd'hui.\nL'objectif est d'apprendre à lire des textes universitaires et à prendre des notes.",
+      visualStyle: "paper"
+    },
+    question: "Quel est l'objectif du cours de FOU ?",
+    choices: [
+      { id: "c1", text: "Lire des textes universitaires et prendre des notes.", isCorrect: true, effects: [{ target: "comprehension", amount: 5 }] },
+      { id: "c2", text: "Passer un examen médical.", isCorrect: false, feedback: "Lisez bien la deuxième phrase du texte.", effects: [] },
+      { id: "c3", text: "Jouer à des jeux.", isCorrect: false, feedback: "Non, c'est un cours universitaire.", effects: [] }
+    ],
+    tags: ["FOU", "A2"],
+    pedagogicalFocus: ["repérer le but d'un document"]
+  },
+  {
+    id: "m10_tableau_certifications_a2",
+    title: "Affiche des examens",
+    level: "A2",
+    tracks: ["a2-b1"],
+    narrativeLevel: 2,
+    missionGroupId: "autonomie-ispa-a2-b1",
+    locationId: "certifications",
+    missionType: "singleChoice",
+    type: "affiche",
+    difficulty: 2,
+    narrativePriority: "side",
+    narrativeContext: "Vous regardez l'affiche des examens officiels.",
+    document: {
+      title: "Examens",
+      sourceType: "Affiche",
+      body: "DELF B2 : Examen en mai. Inscription : 130€.\nTCF : Examen en juin. Inscription : 90€.\nPour vous inscrire, allez au bureau 104.",
+      visualStyle: "poster"
+    },
+    question: "Combien coûte l'inscription au DELF B2 ?",
+    choices: [
+      { id: "c1", text: "130€", isCorrect: true, effects: [{ target: "comprehension", amount: 5 }] },
+      { id: "c2", text: "90€", isCorrect: false, feedback: "Non, ça c'est le prix du TCF.", effects: [] },
+      { id: "c3", text: "C'est gratuit.", isCorrect: false, feedback: "Non, il y a des prix écrits.", effects: [] }
+    ],
+    tags: ["examens", "A2"],
+    pedagogicalFocus: ["repérer un prix"]
+  },
+  {
+    id: "m11_convocation_tcf_a2",
+    title: "Heure de convocation",
+    level: "A2",
+    tracks: ["a2-b1"],
+    narrativeLevel: 2,
+    missionGroupId: "autonomie-ispa-a2-b1",
+    locationId: "certifications",
+    missionType: "singleChoice",
+    type: "mail",
+    difficulty: 3,
+    narrativePriority: "side",
+    prerequisites: [{ type: "missionCompleted", missionId: "m10_tableau_certifications_a2" }],
+    narrativeContext: "Vous avez reçu un message pour un test de niveau.",
+    document: {
+      title: "Convocation",
+      sourceType: "Email",
+      body: "Bonjour,\nVous êtes convoqué pour le test de niveau mardi.\nSoyez présent à 8h30 en salle Gambetta.\nApportez un stylo noir et votre passeport.",
+      visualStyle: "mail"
+    },
+    question: "À quelle heure devez-vous arriver ?",
+    choices: [
+      { id: "c1", text: "À 8h30.", isCorrect: true, effects: [{ target: "organization", amount: 5 }] },
+      { id: "c2", text: "Mardi.", isCorrect: false, feedback: "C'est le jour, pas l'heure !", effects: [] },
+      { id: "c3", text: "À 9h00.", isCorrect: false, feedback: "Regardez bien l'heure écrite dans le texte.", effects: [] }
+    ],
+    tags: ["convocation", "A2"],
+    pedagogicalFocus: ["repérer une heure et un lieu"]
+  },
+  {
+    id: "m12_message_mathias_a2",
+    title: "Le message d'un ami",
+    level: "A2",
+    tracks: ["a2-b1"],
+    narrativeLevel: 2,
+    missionGroupId: "autonomie-ispa-a2-b1",
+    locationId: "cafe_etudiants",
+    missionType: "singleChoice",
+    type: "dialogue",
+    difficulty: 2,
+    narrativePriority: "side",
+    narrativeContext: "Un étudiant français vous envoie un texto.",
+    document: {
+      title: "SMS de Mathias",
+      sourceType: "Téléphone",
+      body: "Salut ! T'es où ? Moi je suis au café. Tu viens manger avec moi ?",
+      visualStyle: "note"
+    },
+    question: "Que propose Mathias ?",
+    choices: [
+      { id: "c1", text: "De venir manger avec lui.", isCorrect: true, effects: [{ target: "sociability", amount: 5 }] },
+      { id: "c2", text: "D'aller en cours.", isCorrect: false, feedback: "Non, il est au café.", effects: [] },
+      { id: "c3", text: "De rentrer à la maison.", isCorrect: false, feedback: "Il dit 'tu viens manger'.", effects: [] }
+    ],
+    tags: ["social", "A2"],
+    pedagogicalFocus: ["comprendre une proposition simple"]
+  },
+  {
+    id: "m13_activite_yaqiu_a2",
+    title: "Inscription sortie",
+    level: "A2",
+    tracks: ["a2-b1"],
+    narrativeLevel: 2,
+    missionGroupId: "autonomie-ispa-a2-b1",
+    locationId: "cathedrale",
+    missionType: "singleChoice",
+    type: "affiche",
+    difficulty: 2,
+    narrativePriority: "side",
+    narrativeContext: "Vous voyez une petite affiche pour une sortie étudiante.",
+    document: {
+      title: "Sortie du mois",
+      sourceType: "Affiche",
+      body: "Samedi : Visite de la Cathédrale.\nC'est gratuit !\nInscrivez-vous sur la liste avant jeudi soir.",
+      visualStyle: "poster"
+    },
+    question: "Comment faire pour participer ?",
+    choices: [
+      { id: "c1", text: "S'inscrire sur la liste avant jeudi.", isCorrect: true, effects: [{ target: "organization", amount: 5 }] },
+      { id: "c2", text: "Payer 10€.", isCorrect: false, feedback: "Non, le texte dit que c'est gratuit.", effects: [] },
+      { id: "c3", text: "Venir dimanche.", isCorrect: false, feedback: "La visite est samedi.", effects: [] }
+    ],
+    tags: ["culture", "A2"],
+    pedagogicalFocus: ["comprendre une condition simple"]
+  },
+  {
+    id: "m15_fiche_orientation_a2",
+    title: "Projet universitaire",
+    level: "A2",
+    tracks: ["a2-b1"],
+    narrativeLevel: 2,
+    missionGroupId: "autonomie-ispa-a2-b1",
+    locationId: "orientation",
+    missionType: "singleChoice",
+    type: "document",
+    difficulty: 3,
+    narrativePriority: "node",
+    isNodeMission: true,
+    prerequisites: [
+      { type: "missionsCompletedInGroup", groupId: "autonomie-ispa-a2-b1", count: 4 }
+    ],
+    narrativeContext: "Vous lisez un document pour continuer vos études à l'université l'année prochaine.",
+    document: {
+      title: "Entrer à l'Université",
+      sourceType: "Fiche formation",
+      body: "Pour entrer en Licence à l'université, vous devez :\n- Avoir un diplôme de niveau B2 en français.\n- Remplir le formulaire sur internet.",
+      visualStyle: "paper"
+    },
+    question: "Quel niveau de français est obligatoire pour la Licence ?",
+    choices: [
+      { id: "c1", text: "Le niveau B2.", isCorrect: true, effects: [{ target: "autonomy", amount: 10 }] },
+      { id: "c2", text: "Le niveau A2.", isCorrect: false, feedback: "Lisez bien le document : il faut un diplôme de niveau B2.", effects: [] },
+      { id: "c3", text: "Le niveau C1.", isCorrect: false, feedback: "Ce n'est pas le niveau demandé dans le texte.", effects: [] }
+    ],
+    tags: ["orientation", "A2", "node"],
+    pedagogicalFocus: ["repérer une exigence académique"],
+    unlocksWhenCompleted: [{ type: "advanceNarrativeLevel", level: 3 }]
   }
 ];

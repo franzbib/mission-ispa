@@ -84,12 +84,30 @@ export const MISSION_GROUPS: Record<string, MissionGroup> = {
     description: 'Participer aux cours avancés et à la vie universitaire.',
     requiredCompletedCount: 4,
     missionIds: [
-      'm9_cours_fou',
-      'm10_presentation_orale',
+      'm9_introduction_fou',
+      'm10_tableau_certifications',
       'm11_convocation_tcf',
-      'm12_projet_culturel',
-      'm13_bu_recherche',
-      'm14_cafe_rencontre'
+      'm12_message_mathias',
+      'm13_activite_yaqiu',
+      'm14_mail_margaux',
+      'm15_fiche_orientation'
+    ],
+    unlocksWhenCompleted: [
+      { type: 'advanceNarrativeLevel', level: 3 }
+    ]
+  },
+  'autonomie-ispa-a2-b1': {
+    id: 'autonomie-ispa-a2-b1',
+    title: 'Autonomie ISPA (A2/B1)',
+    description: 'Comprendre des documents de la vie universitaire et de la vie quotidienne.',
+    requiredCompletedCount: 5,
+    missionIds: [
+      'm9_introduction_fou_a2',
+      'm10_tableau_certifications_a2',
+      'm11_convocation_tcf_a2',
+      'm12_message_mathias_a2',
+      'm13_activite_yaqiu_a2',
+      'm15_fiche_orientation_a2'
     ],
     unlocksWhenCompleted: [
       { type: 'advanceNarrativeLevel', level: 3 }
