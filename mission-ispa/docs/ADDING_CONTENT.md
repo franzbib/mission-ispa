@@ -62,6 +62,69 @@ Pour créer une mission, ajoutez un objet dans le tableau `MISSIONS`.
 }
 ```
 
+## Les Types de Missions (`missionType`)
+
+Voici la liste des types de missions actuellement **implémentés et fonctionnels** dans le moteur :
+
+### 1. `singleChoice` (Choix unique)
+Le joueur lit un document et répond à une question simple avec plusieurs choix, dont un seul est correct.
+- **Champs requis** : `question`, `choices`.
+
+### 2. `multiSelect` (Choix multiple)
+Le joueur doit cocher plusieurs informations correctes parmi une liste.
+- **Champs requis** : un tableau `steps` avec des `choices`, ou bien des `choices` à la racine, et impérativement le champ `correctSelection: ["id_c1", "id_c3"]`.
+
+### 3. `ordering` (Mise en ordre)
+Le joueur doit classer des éléments dans le bon ordre chronologique ou logique.
+- **Champs requis** : `choices` et le tableau `correctOrder: ["id_c2", "id_c1", "id_c3"]`.
+
+### 4. `multiStep` (Plusieurs étapes)
+Une mission découpée en plusieurs sous-questions successives.
+- **Champs requis** : tableau `steps` (où chaque step contient `question` et `choices`).
+
+### 5. `documentComparison` (Comparaison)
+Le joueur doit trouver une différence ou associer des informations entre deux documents.
+- **Champs requis** : un tableau de `documents` au lieu d'un seul `document`, plus une structure `singleChoice` pour la réponse.
+
+> [!NOTE]
+> Types de missions **prévus pour le futur** : `inventorySelection`, `guidedCloze`, `consequenceChoice`.
+
+## Parcours Pédagogiques (Tracks)
+
+Le jeu propose deux parcours parallèles :
+- `a2-b1` : Parcours guidé pour consolider les bases.
+- `b1-b2` : Parcours vers l'autonomie universitaire.
+
+Pour assigner une mission à un ou plusieurs parcours, utilisez le champ `tracks` :
+
+```typescript
+{
+  id: "m_exemple",
+  title: "Exemple",
+  level: "A2", // Conservé à titre indicatif
+  tracks: ["a2-b1"], // Visible uniquement dans le parcours A2/B1
+  // ...
+}
+```
+
+> [!NOTE]
+> Si le champ `tracks` n'est **pas défini**, le moteur considérera par défaut que la mission appartient au parcours `b1-b2` (ce qui assure la rétrocompatibilité des anciennes missions).
+
+### Créer une mission commune
+Si une mission doit être accessible à la fois dans les deux parcours (ex: une mission de la salle d'arcade), ajoutez les deux valeurs :
+```typescript
+  tracks: ["a2-b1", "b1-b2"],
+```
+
+### Associer une mission à une salle précise
+À partir de la V2, le pôle "Salles de cours" générique n'existe plus. Vous devez lier la mission au `locationId` spécifique d'une salle :
+- `salle_beffroi` (Grammaire)
+- `salle_cathedrale` (Projets / FOU)
+- `salle_gambetta` (Réunions / Certifications)
+- `salle_hortillonnages` (Phonétique / Labo)
+- `salle_jules_verne` (Compréhension Écrite)
+- `salle_fou` (Niveau 2)
+
 ## 2. Définir un Groupe de Missions (`src/data/narrativeLevels.ts`)
 
 Les niveaux sont gérés par des groupes de missions.
@@ -89,3 +152,16 @@ Vous pouvez verrouiller une mission, un lieu, ou un niveau grâce aux conditions
 - `{ type: "narrativeLevelReached", level: 2 }`
 
 Si vous inventez une condition absente du type `UnlockCondition`, ajoutez-la d'abord dans `src/types/progression.ts`, puis gérez sa logique de validation dans `src/engine/unlockEngine.ts` (fonction `evaluateCondition`).
+
+## 4. Ajouter un Mini-Jeu d'Arcade (`src/data/arcadeGames.ts`)
+
+Pour le Niveau 3 (Gamification), l'architecture des mini-jeux est prévue dans le fichier `src/data/arcadeGames.ts`.
+
+Pour ajouter un nouveau mini-jeu :
+1. Ajoutez un objet `ArcadeGameMetadata` dans la constante `ARCADE_GAMES`.
+2. Définissez le statut selon votre besoin :
+   - `external` : pour un jeu hébergé ailleurs (nécessite `externalUrl`).
+   - `planned` : pour un jeu prévu (affichera "Bientôt disponible").
+   - `internal` : (futur) pour un jeu React codé dans `src/components/arcade/games/`.
+3. Configurez les conditions de déblocage avec le champ `unlockConditions` (ex: `{ type: "narrativeLevelReached", level: 3 }`).
+4. À terme, les scores pourront être utilisés comme prérequis de mission (ex: `{ type: "arcadeBestScoreAtLeast", gameId: "jeu-verbes", score: 1000 }` - *à implémenter dans unlockEngine.ts*).

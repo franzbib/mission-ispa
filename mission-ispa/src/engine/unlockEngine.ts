@@ -73,7 +73,21 @@ export function evaluateCondition(condition: UnlockCondition, gameState: Charact
   }
 }
 
+export function isMissionInCurrentTrack(mission: Mission, gameState: CharacterState): boolean {
+  const currentTrack = gameState.pedagogicalTrack || 'b1-b2';
+  
+  if (mission.tracks && mission.tracks.length > 0) {
+    return mission.tracks.includes(currentTrack);
+  }
+  
+  // Par défaut, l'absence de 'tracks' signifie que c'est une mission B1/B2
+  return currentTrack === 'b1-b2';
+}
+
 export function isMissionAvailable(mission: Mission, gameState: CharacterState): boolean {
+  // Check pedagogical track
+  if (!isMissionInCurrentTrack(mission, gameState)) return false;
+
   // If completed, it's not "available" to be played again in this UI
   if (gameState.completedMissions.includes(mission.id)) return false;
   

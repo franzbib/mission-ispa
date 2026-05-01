@@ -3,6 +3,16 @@
 ## 1. Concept Fondamental
 **Mission ISPA** est un RPG narratif et pédagogique "Serious Game" visant à faciliter l'intégration linguistique et culturelle des étudiants étrangers en France, en s'inspirant de la véritable offre de l'ISPA à Amiens.
 
+## 1.1 Philosophie et Cible
+Le jeu est conçu pour de jeunes adultes (étudiants internationaux) arrivant en France. L'ambiance est mature, pragmatique et centrée sur des tâches réelles et utiles (Français sur Objectif Spécifique / Universitaire).
+
+### Deux Parcours Pédagogiques (Tracks)
+Afin de ne pas proposer une expérience générique, le joueur choisit un "Parcours" au début du jeu :
+- **A2/B1 (Parcours guidé)** : Vocabulaire plus simple, consignes directes, grammaire de base consolidée (présent, futur proche, obligations simples).
+- **B1/B2 (Parcours autonomie)** : Textes longs, implicite, discours rapporté, Français sur Objectif Universitaire (FOU), et méthodologie avancée.
+
+Ces deux parcours coexistent dans le même moteur. Les lieux de la ville sont mutualisés, mais les missions proposées à l'intérieur s'adaptent dynamiquement au parcours choisi.
+
 ## 2. Boucle de Gameplay
 1. **Exploration** : Le joueur navigue sur une carte de la ville/du campus.
 2. **Identification** : Le joueur repère les lieux accessibles et les missions prioritaires (principales ou secondaires).
@@ -16,13 +26,18 @@ La progression n'est plus linéaire par "Chapitres" mais repose sur des **Niveau
 
 ### Niveau 1 : Arriver, comprendre, s'installer
 - **Objectif** : Régulariser le dossier administratif, comprendre les premiers plannings.
-- **Lieux Initiaux** : ISPA (Accueil), Hall, CROUS (Logement), Salles de cours, Secrétariat.
+- **Lieux Initiaux** : ISPA (Accueil), Hall, CROUS (Logement), Salles de cours nommées (Beffroi, Cathédrale, Gambetta, Hortillonnages, Jules Verne), Secrétariat.
 - **Groupe bloquant** : "Installation ISPA" (Nécessite de valider 5 missions sur 7 + la mission Nœud "Validation du dossier").
 
 ### Niveau 2 : Devenir Autonome
 - **Objectif** : Entrer dans les cours de spécialité (FOU, Prépa TCF) et s'ouvrir à la vie étudiante.
 - **Lieux Débloqués** : Salle FOU, Espace Certifications, BU, Café des Étudiants, Cathédrale, Bureau Orientation.
 - **Thématiques** : Français Universitaire, Certifications, Culture, Orientation.
+
+### Niveau 3 : Gamification et Révisions (En cours de développement)
+- **Objectif** : Travailler des compétences ciblées par le jeu.
+- **Lieux Débloqués** : Salle de jeu.
+- **Thématiques** : Défis syntaxiques, corticaux, lexicaux via des mini-jeux d'arcade (Tetris grammatical, etc.).
 
 ## 4. Typologie des Missions
 

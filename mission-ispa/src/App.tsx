@@ -1,10 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import MapScreen from './components/map/MapScreen';
 import CharacterCreationScreen from './components/character/CharacterCreationScreen';
 import { useGameStore } from './engine/gameState';
 import { audio } from './engine/audioEngine';
+import { validateGameData } from './engine/dataValidation';
 
 function App() {
+  useEffect(() => {
+    validateGameData();
+  }, []);
   const [appState, setAppState] = useState<'landing' | 'creation' | 'playing'>('landing');
   const { name, level, conditions } = useGameStore();
 

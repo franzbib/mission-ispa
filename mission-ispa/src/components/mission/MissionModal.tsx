@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import type { Mission, Choice } from '../../types/mission';
+import type { Mission } from '../../types/mission';
 import { useGameStore } from '../../engine/gameState';
 import { audio } from '../../engine/audioEngine';
+import { validateMissionAnswer } from '../../engine/missionValidation';
+import { UNSUPPORTED_MISSION_TYPES } from '../../constants/gameConstants';
 
-const unsupportedMissionTypes = ['inventorySelection', 'guidedCloze', 'consequenceChoice'] as const;
+const unsupportedMissionTypes = UNSUPPORTED_MISSION_TYPES;
 
 interface Props {
   mission: Mission;
@@ -36,73 +38,19 @@ export default function MissionModal({ mission, onClose }: Props) {
   const choices = currentStep ? currentStep.choices : (mission.choices || []);
   const isUnsupportedMissionType = unsupportedMissionTypes.includes(mission.missionType as typeof unsupportedMissionTypes[number]);
 
-  const getExpectedMultiSelectAnswers = () => {
-    const correctIds = mission.correctSelection || [];
-    return correctIds
-      .map(id => choices.find(choice => choice.id === id)?.text)
-      .filter((text): text is string => Boolean(text));
-  };
-
-  const getExpectedOrderingAnswers = () => {
-    const correctIds = currentStep?.correctOrder || mission.correctOrder || [];
-    return correctIds
-      .map(id => choices.find(choice => choice.id === id)?.text)
-      .filter((text): text is string => Boolean(text));
-  };
-
   const handleValidate = (overrideChoiceId?: string) => {
     if (showFeedback) return;
     
     const actualChoiceId = overrideChoiceId || selectedChoiceId;
     
-    let correct = false;
-    let selectedChoice: Choice | null = null;
-    let feedbackText = "";
-    let effectsToApply = mission.successEffects || [];
-
-    if (mission.missionType === 'singleChoice' || !mission.missionType) {
-       selectedChoice = choices.find(c => c.id === actualChoiceId) || null;
-       if (selectedChoice) {
-         correct = !!selectedChoice.isCorrect;
-         feedbackText = selectedChoice.feedback || (correct ? "Bonne réponse !" : "Mauvaise réponse.");
-         effectsToApply = selectedChoice.effects;
-       }
-    } else if (mission.missionType === 'multiSelect') {
-       const correctIds = mission.correctSelection || [];
-       const isExactlyCorrect = selectedChoicesIds.length === correctIds.length && selectedChoicesIds.every(id => correctIds.includes(id));
-       correct = isExactlyCorrect;
-       const expectedAnswers = getExpectedMultiSelectAnswers();
-       feedbackText = correct
-         ? "C'est exact ! Vous avez s\u00e9lectionn\u00e9 les bonnes informations."
-         : `La s\u00e9lection n'est pas compl\u00e8te ou contient une erreur. R\u00e9ponses attendues : ${expectedAnswers.join(', ')}.`;
-       effectsToApply = correct ? (mission.successEffects || []) : (mission.failureEffects || [{ target: 'stress', amount: 5 }]);
-    } else if (mission.missionType === 'multiStep') {
-       selectedChoice = choices.find(c => c.id === actualChoiceId) || null;
-       if (selectedChoice) {
-         correct = !!selectedChoice.isCorrect;
-         feedbackText = selectedChoice.feedback || (correct ? "C'est exact." : "Non, essayez encore.");
-         effectsToApply = selectedChoice.effects;
-       }
-    } else if (mission.missionType === 'ordering') {
-       const correctOrder = currentStep?.correctOrder || mission.correctOrder || [];
-       correct = correctOrder.length > 0 && orderingChoiceIds.length === correctOrder.length && orderingChoiceIds.every((id, index) => id === correctOrder[index]);
-       const expectedAnswers = getExpectedOrderingAnswers();
-       feedbackText = correct
-         ? "C'est exact ! L'ordre est correct."
-         : `L'ordre n'est pas encore correct. Ordre attendu : ${expectedAnswers.join(' > ')}.`;
-       effectsToApply = correct ? (mission.successEffects || []) : (mission.failureEffects || [{ target: 'stress', amount: 5 }]);
-    } else if (mission.missionType === 'documentComparison') {
-       selectedChoice = choices.find(c => c.id === actualChoiceId) || null;
-       if (selectedChoice) {
-         correct = !!selectedChoice.isCorrect;
-         feedbackText = selectedChoice.feedback || (correct ? "Bien vu !" : "Erreur d'analyse.");
-         effectsToApply = selectedChoice.effects;
-       }
-    } else {
-       correct = false;
-       feedbackText = "Ce type de mission est pr\u00e9vu mais pas encore impl\u00e9ment\u00e9.";
-       effectsToApply = [];
-    }
+    const { correct, feedbackText, effectsToApply } = validateMissionAnswer({
+      mission,
+      currentStep,
+      actualChoiceId,
+      selectedChoicesIds,
+      orderingChoiceIds,
+      choices
+    });
 
     setIsSuccess(correct);
     setFeedbackMessage(feedbackText);

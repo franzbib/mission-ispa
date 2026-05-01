@@ -46,6 +46,7 @@ export interface Mission {
   id: string;
   title: string;
   level: "A2" | "B1" | "B2";
+  tracks?: ("a2-b1" | "b1-b2")[];
   narrativeLevel?: 1 | 2 | 3;
   chapterId?: string; // Keep for backward compatibility or optional narrative flow
   arcId?: string;

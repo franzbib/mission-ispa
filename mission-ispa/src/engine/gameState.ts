@@ -1,10 +1,12 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { CharacterState } from '../types/gameState';
+import type { MiniGameResult, ArcadeScore } from '../types/arcade';
 
 interface GameStore extends CharacterState {
   setName: (name: string) => void;
   setProfile: (profile: string, initialStats: CharacterState['stats']) => void;
+  setPedagogicalTrack: (track: 'a2-b1' | 'b1-b2') => void;
   updateStat: (stat: keyof CharacterState['stats'], amount: number) => void;
   updateCondition: (condition: keyof CharacterState['conditions'], amount: number) => void;
   unlockLocation: (locationId: string) => void;
@@ -13,6 +15,8 @@ interface GameStore extends CharacterState {
   advanceChapter: (chapterId: string) => void;
   advanceNarrativeLevel: (level: number) => void;
   addItem: (itemId: string) => void;
+  recordArcadeScore: (result: MiniGameResult) => void;
+  resetArcadeScores: () => void;
   resetGame: () => void;
 }
 
@@ -20,6 +24,7 @@ const initialState: CharacterState = {
   name: '',
   profile: '',
   level: 'B1',
+  pedagogicalTrack: 'b1-b2',
   stats: {
     comprehension: 10,
     grammar: 10,
@@ -42,6 +47,10 @@ const initialState: CharacterState = {
   completedMissions: [],
   currentChapterId: 'prologue',
   currentNarrativeLevel: 1,
+  arcade: {
+    scores: [],
+    bestScores: {}
+  }
 };
 
 export const useGameStore = create<GameStore>()(
@@ -50,6 +59,7 @@ export const useGameStore = create<GameStore>()(
       ...initialState,
       setName: (name) => set({ name }),
       setProfile: (profile, initialStats) => set({ profile, stats: initialStats }),
+      setPedagogicalTrack: (track) => set({ pedagogicalTrack: track }),
       updateStat: (stat, amount) => set((state) => ({
         stats: { ...state.stats, [stat]: Math.max(0, Math.min(100, state.stats[stat] + amount)) }
       })),
@@ -79,6 +89,34 @@ export const useGameStore = create<GameStore>()(
       advanceNarrativeLevel: (level) => set({ currentNarrativeLevel: level }),
       addItem: (itemId) => set((state) => ({
         inventory: [...new Set([...state.inventory, itemId])]
+      })),
+      recordArcadeScore: (result) => set((state) => {
+        const arcadeState = state.arcade || { scores: [], bestScores: {} };
+        const newScore: ArcadeScore = {
+          gameId: result.gameId,
+          playedAt: new Date().toISOString(),
+          score: result.score,
+          maxScore: result.maxScore,
+          accuracy: result.accuracy,
+          durationSeconds: result.durationSeconds,
+          level: result.level,
+          details: result.details
+        };
+        const currentBest = arcadeState.bestScores[result.gameId];
+        const isBest = !currentBest || result.score > currentBest.score;
+        return {
+          arcade: {
+            ...arcadeState,
+            scores: [...arcadeState.scores, newScore],
+            bestScores: {
+              ...arcadeState.bestScores,
+              [result.gameId]: isBest ? newScore : currentBest
+            }
+          }
+        };
+      }),
+      resetArcadeScores: () => set(() => ({
+        arcade: { scores: [], bestScores: {} }
       })),
       resetGame: () => set(initialState),
     }),

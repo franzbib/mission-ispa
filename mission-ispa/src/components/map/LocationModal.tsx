@@ -1,9 +1,10 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { MISSIONS } from '../../data/missions';
 import { useGameStore } from '../../engine/gameState';
-import { getLocationState, isMissionAvailable, getMissingRequirementsLabel } from '../../engine/unlockEngine';
+import { getLocationState, isMissionAvailable, getMissingRequirementsLabel, isMissionInCurrentTrack } from '../../engine/unlockEngine';
 import { LOCATIONS } from '../../data/locations';
 import type { Mission } from '../../types/mission';
+import ArcadeHub from '../arcade/ArcadeHub';
 
 interface Props {
   locationId: string;
@@ -14,7 +15,7 @@ interface Props {
 export default function LocationModal({ locationId, onClose, onSelectMission }: Props) {
   const gameState = useGameStore(state => state);
   const completedMissions = gameState.completedMissions;
-  const locationMissions = MISSIONS.filter(m => m.locationId === locationId);
+  const locationMissions = MISSIONS.filter(m => m.locationId === locationId && isMissionInCurrentTrack(m, gameState));
   const locData = LOCATIONS.find(l => l.id === locationId);
   const locState = getLocationState(locationId, gameState);
   
@@ -125,20 +126,26 @@ export default function LocationModal({ locationId, onClose, onSelectMission }: 
 
             {locState !== 'discovered' && (
               <>
-                <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                  <svg className="w-4 h-4 text-ispa-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
-                  Missions disponibles
-                </h3>
+                {locationId === 'salle_jeu' ? (
+                  <ArcadeHub onClose={onClose} />
+                ) : (
+                  <>
+                    <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                      <svg className="w-4 h-4 text-ispa-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+                      Missions disponibles
+                    </h3>
 
-                <div className="grid gap-3">
-                  {locationMissions.length === 0 ? (
-                     <div className="p-6 text-center border border-dashed border-slate-600 rounded-xl">
-                       <p className="text-slate-500 text-sm">Aucune mission disponible ici pour le moment.</p>
-                     </div>
-                  ) : (
-                    locationMissions.map(renderMissionButton)
-                  )}
-                </div>
+                    <div className="grid gap-3">
+                      {locationMissions.length === 0 ? (
+                         <div className="p-6 text-center border border-dashed border-slate-600 rounded-xl">
+                           <p className="text-slate-500 text-sm">Aucune mission disponible ici pour le moment.</p>
+                         </div>
+                      ) : (
+                        locationMissions.map(renderMissionButton)
+                      )}
+                    </div>
+                  </>
+                )}
               </>
             )}
             

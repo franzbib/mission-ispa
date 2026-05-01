@@ -8,16 +8,23 @@ export default function CharacterModal({ onClose }: { onClose: () => void }) {
   const gameState = useGameStore();
   const { name, profile, level, stats, currentNarrativeLevel, completedMissions } = gameState;
   const currentLevel = NARRATIVE_LEVELS[currentNarrativeLevel];
+  
+  // Track logic
+  const track = gameState.pedagogicalTrack || 'b1-b2';
+  const installationGroupId = track === 'a2-b1' ? 'installation-ispa-a2-b1' : 'installation-ispa';
+  
   const activeGroup = currentLevel?.mainMissionGroups[0] ? MISSION_GROUPS[currentLevel.mainMissionGroups[0]] : null;
   const completedInGroup = activeGroup ? activeGroup.missionIds.filter(id => completedMissions.includes(id)).length : 0;
-  const installationGroup = MISSION_GROUPS['installation-ispa'];
-  const installationMissions = MISSIONS.filter(mission => mission.missionGroupId === 'installation-ispa');
+  
+  const installationGroup = MISSION_GROUPS[installationGroupId];
+  const installationMissions = MISSIONS.filter(mission => mission.missionGroupId === installationGroupId);
   const requiredInstallationCount = installationGroup?.requiredCompletedCount || installationMissions.length;
   const completedInstallationCount = installationGroup
     ? installationGroup.missionIds.filter(id => completedMissions.includes(id)).length
     : installationMissions.filter(mission => completedMissions.includes(mission.id)).length;
   const displayedCompletedInstallationCount = Math.min(completedInstallationCount, requiredInstallationCount);
-  const nodeMission = MISSIONS.find(mission => mission.id === 'm8_validation_dossier');
+  const nodeMissionId = track === 'a2-b1' ? 'm8_validation_dossier_a2' : 'm8_validation_dossier';
+  const nodeMission = MISSIONS.find(mission => mission.id === nodeMissionId);
   const hasReachedLevel2 = currentNarrativeLevel >= 2;
 
   const getStatLabel = (key: string) => {
@@ -98,10 +105,17 @@ export default function CharacterModal({ onClose }: { onClose: () => void }) {
 
           <div className="bg-slate-900/40 p-4 rounded-xl border border-slate-700/60">
             <div className="flex flex-col gap-1 mb-4">
-              <h3 className="text-xs font-bold text-amber-500 uppercase tracking-widest">Progression vers le Niveau 2</h3>
+              <h3 className="text-xs font-bold text-amber-500 uppercase tracking-widest">
+                Progression vers le Niveau 2 — {track === 'a2-b1' ? 'Parcours A2/B1' : 'Parcours B1/B2'}
+              </h3>
               <p className="text-sm font-semibold text-white">{installationGroup?.title || 'Installation ISPA'}</p>
               <p className="text-xs text-slate-400">
                 {displayedCompletedInstallationCount} / {requiredInstallationCount} missions nécessaires terminées
+              </p>
+              <p className="text-xs text-slate-500 italic mt-1">
+                {track === 'a2-b1' 
+                  ? 'Terminez les missions d\'installation pour mieux comprendre l\'ISPA et débloquer de nouveaux lieux.'
+                  : 'Validez votre dossier et consolidez votre autonomie pour accéder aux cours de FOU, aux certifications et aux nouveaux lieux.'}
               </p>
             </div>
 

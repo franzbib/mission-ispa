@@ -146,24 +146,24 @@ export const MISSIONS: Mission[] = [
       title: 'Emploi du temps - Lundi',
       sourceType: 'Écran',
       visualStyle: 'poster',
-      body: '09h00 - 11h00 : Compréhension Écrite (B1) - Salle 205\n11h00 - 12h30 : Phonétique - Labo Langues\n14h00 - 16h00 : Grammaire - Salle 205',
-      bodyZh: '09:00 - 11:00：阅读理解 (B1) - 205教室\n11:00 - 12:30：语音 - 语言实验室\n14:00 - 16:00：语法 - 205教室',
+      body: '09h00 - 11h00 : Compréhension Écrite (B1) - Salle Jules Verne\n11h00 - 12h30 : Phonétique - Salle Hortillonnages\n14h00 - 16h00 : Grammaire - Salle Beffroi',
+      bodyZh: '09:00 - 11:00：阅读理解 (B1) - Jules Verne教室\n11:00 - 12:30：语音 - Hortillonnages教室\n14:00 - 16:00：语法 - Beffroi教室',
     },
     question: 'Vous êtes dans le groupe B1. Où devez-vous aller à 9h00 ?',
     questionZh: '你在B1组。9点你应该去哪里？',
     choices: [
       {
         id: 'c1',
-        text: 'Au Labo Langues',
+        text: 'En salle Hortillonnages',
         isCorrect: false,
-        feedback: 'Regardez bien l\'heure : le labo langues, c\'est à 11h00.',
+        feedback: 'Regardez bien l\'heure : ce cours (Phonétique) est à 11h00.',
         effects: [{ target: 'stress', amount: 2 }],
       },
       {
         id: 'c2',
-        text: 'En salle 205',
+        text: 'En salle Jules Verne',
         isCorrect: true,
-        feedback: 'C\'est bien ça. Les salles de cours sont maintenant débloquées !',
+        feedback: 'C\'est bien ça. Les différentes salles de cours sont maintenant débloquées !',
         effects: [{ target: 'autonomy', amount: 2 }],
       }
     ],
@@ -174,7 +174,7 @@ export const MISSIONS: Mission[] = [
     title: 'Le programme de la semaine',
     narrativeLevel: 1,
     missionGroupId: 'installation-ispa',
-    locationId: 'salles_cours',
+    locationId: 'salle_beffroi',
     level: 'B1',
     missionType: 'singleChoice',
     type: 'document',
@@ -255,7 +255,7 @@ export const MISSIONS: Mission[] = [
     title: 'Le message du professeur',
     narrativeLevel: 1,
     missionGroupId: 'installation-ispa',
-    locationId: 'salles_cours',
+    locationId: 'salle_jules_verne',
     level: 'B1',
     missionType: 'singleChoice',
     type: 'mail',
@@ -442,7 +442,7 @@ export const MISSIONS: Mission[] = [
       title: 'Convocation Officielle',
       sourceType: 'Ministère',
       visualStyle: 'paper',
-      body: 'Vous êtes convoqué(e) le jeudi 12 mai à 8h30 en salle 302.\n\nVous devez impérativement vous munir de :\n- Cette convocation imprimée.\n- Une pièce d\'identité valide (passeport ou titre de séjour).\n- Un stylo noir.\n\nTout retardataire se verra refuser l\'accès à la salle.',
+      body: 'Vous êtes convoqué(e) le jeudi 12 mai à 8h30 en salle Gambetta.\n\nVous devez impérativement vous munir de :\n- Cette convocation imprimée.\n- Une pièce d\'identité valide (passeport ou titre de séjour).\n- Un stylo noir.\n\nTout retardataire se verra refuser l\'accès à la salle.',
     },
     question: 'Quelles règles devez-vous respecter pour entrer dans la salle ? (Cochez tout ce qui s\'applique)',
     choices: [
@@ -601,5 +601,253 @@ export const MISSIONS: Mission[] = [
     ],
     tags: ['B2', 'Orientation', 'Précision lexicale'],
     unlocksWhenCompleted: [{ type: 'advanceNarrativeLevel', level: 3 }]
+  },
+  
+  // ============================================================================
+  // PARCOURS A2/B1 - NIVEAU 1
+  // ============================================================================
+  {
+    id: "m1_accueil_delphine_a2",
+    title: "Bienvenue à l'ISPA",
+    level: "A2",
+    tracks: ["a2-b1"],
+    narrativeLevel: 1,
+    missionGroupId: "installation-ispa-a2-b1",
+    locationId: "secretariat",
+    missionType: "singleChoice",
+    type: "mail",
+    difficulty: 1,
+    narrativePriority: "main",
+    narrativeContext: "Vous lisez votre premier e-mail de l'ISPA.",
+    document: {
+      title: "Bienvenue",
+      sourceType: "Email de la direction",
+      body: "Bonjour,\nBienvenue à l'ISPA.\nAujourd'hui, allez au secrétariat avec votre passeport.\nLe secrétariat est au bureau 102.\nÀ bientôt,\nDelphine.",
+      visualStyle: "mail"
+    },
+    question: "Que devez-vous apporter ?",
+    choices: [
+      {
+        id: "c1",
+        text: "Le passeport.",
+        isCorrect: true,
+        feedback: "Parfait ! Le texte dit 'avec votre passeport'.",
+        effects: [{ target: "comprehension", amount: 5 }]
+      },
+      {
+        id: "c2",
+        text: "Le dossier d'inscription.",
+        isCorrect: false,
+        feedback: "Non, le texte ne parle pas du dossier. Il dit 'avec votre passeport'.",
+        effects: []
+      },
+      {
+        id: "c3",
+        text: "De l'argent.",
+        isCorrect: false,
+        feedback: "Non, regardez bien, il faut apporter un document d'identité.",
+        effects: []
+      }
+    ],
+    tags: ["accueil", "A2"],
+    pedagogicalFocus: ["repérer une information explicite", "vocabulaire de l'école"]
+  },
+  {
+    id: "m4_premier_cours_a2",
+    title: "Consigne du professeur",
+    level: "A2",
+    tracks: ["a2-b1"],
+    narrativeLevel: 1,
+    missionGroupId: "installation-ispa-a2-b1",
+    locationId: "salles_cours",
+    missionType: "singleChoice",
+    type: "document",
+    difficulty: 1,
+    narrativePriority: "main",
+    narrativeContext: "Le professeur écrit une petite note au tableau.",
+    document: {
+      title: "Pour lundi",
+      sourceType: "Tableau de la classe",
+      body: "Pour lundi, lisez le petit texte et soulignez les mots importants.",
+      visualStyle: "note"
+    },
+    question: "Que devez-vous faire ?",
+    choices: [
+      {
+        id: "c1",
+        text: "Souligner les mots importants.",
+        isCorrect: true,
+        feedback: "Bravo ! Vous avez bien compris la consigne.",
+        effects: [{ target: "comprehension", amount: 5 }]
+      },
+      {
+        id: "c2",
+        text: "Apprendre par cœur.",
+        isCorrect: false,
+        feedback: "Non, le professeur a écrit 'soulignez'.",
+        effects: []
+      },
+      {
+        id: "c3",
+        text: "Écrire un texte.",
+        isCorrect: false,
+        feedback: "Non, il faut lire, pas écrire.",
+        effects: []
+      }
+    ],
+    tags: ["cours", "A2"],
+    pedagogicalFocus: ["comprendre une consigne simple"]
+  },
+  {
+    id: "m2_dossier_incomplet_a2",
+    title: "Dossier incomplet",
+    level: "A2",
+    tracks: ["a2-b1"],
+    narrativeLevel: 1,
+    missionGroupId: "installation-ispa-a2-b1",
+    locationId: "secretariat",
+    missionType: "multiSelect",
+    type: "document",
+    difficulty: 2,
+    narrativePriority: "main",
+    narrativeContext: "Vous avez reçu un post-it du secrétariat.",
+    document: {
+      title: "Dossier",
+      sourceType: "Post-it",
+      body: "Pour votre dossier, il manque :\n- une photo\n- une attestation d'assurance.",
+      visualStyle: "note"
+    },
+    steps: [
+      {
+        id: "s1",
+        question: "Quels documents manquent ? (Choisissez 2 réponses)",
+        choices: [
+          { id: "c1", text: "Une photo", effects: [] },
+          { id: "c2", text: "Le passeport", effects: [] },
+          { id: "c3", text: "Une attestation d'assurance", effects: [] },
+          { id: "c4", text: "Le visa", effects: [] }
+        ]
+      }
+    ],
+    correctSelection: ["c1", "c3"],
+    successEffects: [{ target: "organization", amount: 5 }],
+    tags: ["dossier", "A2"],
+    pedagogicalFocus: ["repérer des informations multiples"]
+  },
+  {
+    id: "m5_emploi_du_temps_a2",
+    title: "Trouver la bonne salle",
+    level: "A2",
+    tracks: ["a2-b1"],
+    narrativeLevel: 1,
+    missionGroupId: "installation-ispa-a2-b1",
+    locationId: "hall",
+    missionType: "singleChoice",
+    type: "document",
+    difficulty: 1,
+    narrativePriority: "main",
+    narrativeContext: "Vous regardez votre emploi du temps.",
+    document: {
+      title: "Lundi",
+      sourceType: "Emploi du temps",
+      body: "9h00 - Compréhension écrite - Salle Jules Verne\n11h00 - Grammaire - Salle Beffroi\n14h00 - Phonétique - Salle Hortillonnages",
+      visualStyle: "paper"
+    },
+    question: "À 9h00, vous allez dans quelle salle ?",
+    choices: [
+      { id: "c1", text: "Jules Verne", isCorrect: true, effects: [{ target: "organization", amount: 5 }] },
+      { id: "c2", text: "Beffroi", isCorrect: false, feedback: "Non, ça c'est à 11h00.", effects: [] },
+      { id: "c3", text: "Hortillonnages", isCorrect: false, feedback: "Non, ça c'est l'après-midi.", effects: [] }
+    ],
+    tags: ["planning", "A2"],
+    pedagogicalFocus: ["lire un emploi du temps simple"]
+  },
+  {
+    id: "m6_reglement_absences_a2",
+    title: "Message d'absence",
+    level: "A2",
+    tracks: ["a2-b1"],
+    narrativeLevel: 1,
+    missionGroupId: "installation-ispa-a2-b1",
+    locationId: "secretariat",
+    missionType: "singleChoice",
+    type: "document",
+    difficulty: 2,
+    narrativePriority: "main",
+    narrativeContext: "Le règlement de l'école est affiché.",
+    document: {
+      title: "Règlement",
+      sourceType: "Affiche",
+      body: "Si vous êtes absent, envoyez un mail au secrétariat avant 9h.",
+      visualStyle: "poster"
+    },
+    question: "Que devez-vous faire en cas d'absence ?",
+    choices: [
+      { id: "c1", text: "Envoyer un mail avant 9h.", isCorrect: true, effects: [{ target: "autonomy", amount: 5 }] },
+      { id: "c2", text: "Téléphoner au professeur.", isCorrect: false, feedback: "Non, l'affiche dit 'envoyez un mail'.", effects: [] },
+      { id: "c3", text: "Venir l'après-midi.", isCorrect: false, feedback: "Non, ce n'est pas ce qui est écrit.", effects: [] }
+    ],
+    tags: ["reglement", "A2"],
+    pedagogicalFocus: ["comprendre une obligation simple"]
+  },
+  {
+    id: "m7_message_francois_a2",
+    title: "Message amical",
+    level: "A2",
+    tracks: ["a2-b1"],
+    narrativeLevel: 1,
+    missionGroupId: "installation-ispa-a2-b1",
+    locationId: "cafe_etudiants",
+    missionType: "singleChoice",
+    type: "mail",
+    difficulty: 1,
+    narrativePriority: "main",
+    narrativeContext: "Un camarade de classe vous écrit un SMS.",
+    document: {
+      title: "Nouveau message",
+      sourceType: "Téléphone",
+      body: "Salut ! Je suis au café des étudiants. Tu viens après le cours ?",
+      visualStyle: "note"
+    },
+    question: "Où est votre camarade ?",
+    choices: [
+      { id: "c1", text: "Au café des étudiants.", isCorrect: true, effects: [{ target: "sociability", amount: 5 }] },
+      { id: "c2", text: "Dans la salle de cours.", isCorrect: false, feedback: "Non, il y va après.", effects: [] },
+      { id: "c3", text: "À la bibliothèque.", isCorrect: false, feedback: "Non, il a écrit 'au café'.", effects: [] }
+    ],
+    tags: ["social", "A2"],
+    pedagogicalFocus: ["comprendre un message amical simple"]
+  },
+  {
+    id: "m8_validation_dossier_a2",
+    title: "Dossier Validé !",
+    level: "A2",
+    tracks: ["a2-b1"],
+    narrativeLevel: 1,
+    missionGroupId: "installation-ispa-a2-b1",
+    locationId: "secretariat",
+    missionType: "singleChoice",
+    type: "dialogue",
+    difficulty: 2,
+    narrativePriority: "node",
+    isNodeMission: true,
+    prerequisites: [
+      { type: "missionsCompletedInGroup", groupId: "installation-ispa-a2-b1", count: 5 }
+    ],
+    narrativeContext: "Vous avez tous les documents. Allez voir la secrétaire.",
+    document: {
+      title: "Guichet du secrétariat",
+      sourceType: "Dialogue",
+      body: "- Bonjour, j'ai apporté ma photo et mon attestation d'assurance.\n- Très bien, merci. Voici votre carte d'étudiant. Bonne année à l'ISPA !",
+      visualStyle: "note"
+    },
+    question: "Que recevez-vous aujourd'hui ?",
+    choices: [
+      { id: "c1", text: "La carte d'étudiant.", isCorrect: true, effects: [{ target: "autonomy", amount: 10 }] },
+      { id: "c2", text: "Le passeport.", isCorrect: false, feedback: "Non, le passeport vous l'aviez déjà.", effects: [] },
+      { id: "c3", text: "Un livre.", isCorrect: false, feedback: "Non, lisez bien le dernier texte.", effects: [] }
+    ],
+    tags: ["validation", "A2", "node"],
+    pedagogicalFocus: ["comprendre un dialogue court"]
   }
 ];

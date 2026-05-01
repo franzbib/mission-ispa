@@ -6,11 +6,13 @@ import { audio } from '../../engine/audioEngine';
 export default function CharacterCreationScreen({ onComplete }: { onComplete: () => void }) {
   const [step, setStep] = useState(1);
   const [name, setName] = useState('');
-  const [level, setLevel] = useState<'A2' | 'B1' | 'B2'>('B1');
+  const [, setLevel] = useState<'A2' | 'B1' | 'B2'>('B1'); // Kept for retrocompatibility if needed
+  const [pedagogicalTrack, setPedagogicalTrack] = useState<'a2-b1' | 'b1-b2'>('b1-b2');
   const [profileType, setProfileType] = useState('');
   
   const setGameProfile = useGameStore(state => state.setProfile);
   const setGameName = useGameStore(state => state.setName);
+  const setTrack = useGameStore(state => state.setPedagogicalTrack);
 
   const handleComplete = () => {
     audio.playUnlock();
@@ -39,6 +41,7 @@ export default function CharacterCreationScreen({ onComplete }: { onComplete: ()
     }
 
     setGameProfile(profileType, stats);
+    if (setTrack) setTrack(pedagogicalTrack);
     onComplete();
   };
 
@@ -74,19 +77,25 @@ export default function CharacterCreationScreen({ onComplete }: { onComplete: ()
 
           {step === 2 && (
             <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-              <h2 className="text-3xl font-serif font-bold text-white mb-2">Votre Niveau</h2>
-              <p className="text-slate-400 mb-8">Quel est votre niveau de français estimé ?</p>
+              <h2 className="text-3xl font-serif font-bold text-white mb-2">Votre Parcours</h2>
+              <p className="text-slate-400 mb-8">Choisissez l'expérience pédagogique qui vous correspond le mieux.</p>
               
-              <div className="flex gap-4">
-                {['A2', 'B1', 'B2'].map(lvl => (
-                  <button 
-                    key={lvl}
-                    onClick={() => { audio.playClick(); setLevel(lvl as any); }}
-                    className={`flex-1 py-6 rounded-xl border-2 font-bold text-xl transition-all ${level === lvl ? 'border-ispa-accent bg-ispa-accent/20 text-ispa-accent' : 'border-slate-700 bg-slate-800/50 text-slate-400 hover:border-slate-500'}`}
-                  >
-                    {lvl}
-                  </button>
-                ))}
+              <div className="flex flex-col gap-4">
+                <button 
+                  onClick={() => { audio.playClick(); setPedagogicalTrack('a2-b1'); setLevel('A2'); }}
+                  className={`w-full p-4 rounded-xl border text-left transition-all ${pedagogicalTrack === 'a2-b1' ? 'border-ispa-accent bg-ispa-accent/20' : 'border-slate-700 bg-slate-800/50 hover:border-slate-500'}`}
+                >
+                  <h3 className={`font-bold text-lg mb-1 ${pedagogicalTrack === 'a2-b1' ? 'text-ispa-accent' : 'text-slate-200'}`}>A2/B1 — Parcours guidé</h3>
+                  <p className="text-sm text-slate-400">Pour les étudiants qui consolident les bases : documents courts, vocabulaire plus simple, consignes guidées, grammaire essentielle.</p>
+                </button>
+
+                <button 
+                  onClick={() => { audio.playClick(); setPedagogicalTrack('b1-b2'); setLevel('B1'); }}
+                  className={`w-full p-4 rounded-xl border text-left transition-all ${pedagogicalTrack === 'b1-b2' ? 'border-amber-500 bg-amber-500/20' : 'border-slate-700 bg-slate-800/50 hover:border-slate-500'}`}
+                >
+                  <h3 className={`font-bold text-lg mb-1 ${pedagogicalTrack === 'b1-b2' ? 'text-amber-500' : 'text-slate-200'}`}>B1/B2 — Parcours autonomie universitaire</h3>
+                  <p className="text-sm text-slate-400">Pour ceux qui préparent l'autonomie universitaire : documents plus longs, implicite, FOU, registres et consignes complexes.</p>
+                </button>
               </div>
               
               <div className="flex gap-4 mt-8">

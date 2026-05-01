@@ -1,7 +1,10 @@
+import type { ArcadeScore } from './arcade';
+
 export interface CharacterState {
   name: string;
   profile: string;
   level: 'A2' | 'B1' | 'B2';
+  pedagogicalTrack?: 'a2-b1' | 'b1-b2';
   stats: {
     comprehension: number;
     grammar: number;
@@ -25,4 +28,9 @@ export interface CharacterState {
   completedMissions: string[];
   currentChapterId: string;
   currentNarrativeLevel: number;
+  arcade?: {
+    scores: ArcadeScore[];
+    bestScores: Record<string, ArcadeScore>;
+    unlockedArcadeGames?: string[];
+  };
 }

@@ -19,11 +19,25 @@ export const NARRATIVE_LEVELS: Record<number, NarrativeLevel> = {
     subtitle: 'Devenir autonome à l\'ISPA',
     description: 'Vous n\'êtes plus seulement un nouvel arrivant. Entrez dans la formation : cours FOU, méthodologie, certifications, et activités culturelles.',
     entryConditions: [
-      { type: 'missionCompleted', missionId: 'm8_validation_dossier' }
+      { type: 'missionGroupCompleted', groupId: 'installation-ispa' }
     ],
-    unlockedLocations: ['salle_fou', 'certifications', 'multimedia', 'cafe_etudiants', 'bu', 'orientation', 'cathedrale'],
+    unlockedLocations: ['salle_fou', 'certifications', 'multimedia', 'cafe_etudiants', 'bu', 'orientation', 'cathedrale', 'lys_dor'],
     discoveredLocations: [],
     mainMissionGroups: ['autonomie-ispa']
+  },
+  3: {
+    id: 'niveau_3',
+    number: 3,
+    title: 'Niveau 3',
+    subtitle: 'Réviser autrement',
+    description: 'Après avoir consolidé son autonomie universitaire, l\'étudiant accède à la salle de jeu, un espace où les compétences linguistiques peuvent être travaillées sous forme de défis rapides.',
+    entryConditions: [
+      { type: 'narrativeLevelReached', level: 2 },
+      { type: 'missionCompleted', missionId: 'm15_fiche_orientation' }
+    ],
+    unlockedLocations: ['salle_jeu'],
+    discoveredLocations: [],
+    mainMissionGroups: []
   }
 };
 
@@ -44,7 +58,41 @@ export const MISSION_GROUPS: Record<string, MissionGroup> = {
     ],
     unlocksWhenCompleted: [
       { type: 'advanceNarrativeLevel', level: 2 }
+    ]
+  },
+  'installation-ispa-a2-b1': {
+    id: 'installation-ispa-a2-b1',
+    title: 'Installation ISPA (A2/B1)',
+    description: 'Comprendre les documents simples, valider le dossier, repérer les salles.',
+    requiredCompletedCount: 5,
+    missionIds: [
+      'm1_accueil_delphine_a2',
+      'm4_premier_cours_a2',
+      'm2_dossier_incomplet_a2',
+      'm5_emploi_du_temps_a2',
+      'm6_reglement_absences_a2',
+      'm7_message_francois_a2',
+      'm3_justificatif_oublie_a2'
     ],
-    narrativeLevelUnlocked: 2
+    unlocksWhenCompleted: [
+      { type: 'advanceNarrativeLevel', level: 2 }
+    ]
+  },
+  'autonomie-ispa': {
+    id: 'autonomie-ispa',
+    title: 'Vers l\'Autonomie',
+    description: 'Participer aux cours avancés et à la vie universitaire.',
+    requiredCompletedCount: 4,
+    missionIds: [
+      'm9_cours_fou',
+      'm10_presentation_orale',
+      'm11_convocation_tcf',
+      'm12_projet_culturel',
+      'm13_bu_recherche',
+      'm14_cafe_rencontre'
+    ],
+    unlocksWhenCompleted: [
+      { type: 'advanceNarrativeLevel', level: 3 }
+    ]
   }
 };
