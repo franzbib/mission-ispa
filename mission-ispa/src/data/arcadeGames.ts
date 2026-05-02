@@ -6,8 +6,7 @@ export const ARCADE_GAMES: ArcadeGameMetadata[] = [
     title: "Jeu des verbes",
     subtitle: "Réviser les temps verbaux en mode arcade",
     description: "Un mini-jeu de rapidité pour reconnaître les temps verbaux et classer les formes conjuguées.",
-    status: "external",
-    externalUrl: "https://jeu-verbes.vercel.app/",
+    status: "internal",
     kind: "verbs",
     cefrLevels: ["A2", "B1", "B2"],
     pedagogicalFocus: ["conjugaison", "temps verbaux", "reconnaissance rapide"],
@@ -48,5 +47,16 @@ export const ARCADE_GAMES: ArcadeGameMetadata[] = [
     pedagogicalFocus: ["FOU", "méthodologie", "registres"],
     unlockConditions: [{ type: "narrativeLevelReached", level: 3 }],
     tags: ["fou", "université"]
+  },
+  {
+    id: "chute-des-mots",
+    title: "Chute des mots — Temps verbaux B2",
+    description: "Classe les formes verbales qui tombent dans le bon tiroir. Obtiens au moins 70 % de réussite pour valider la mission.",
+    status: "internal",
+    kind: "verbs",
+    cefrLevels: ["B2"],
+    pedagogicalFocus: ["temps verbaux", "reconnaissance morphologique", "rapidité de classement grammatical"],
+    unlockConditions: [{ type: "narrativeLevelReached", level: 3 }],
+    tags: ["grammaire", "verbes", "rapidité"]
   }
 ];

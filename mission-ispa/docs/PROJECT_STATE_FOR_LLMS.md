@@ -38,8 +38,10 @@ Le joueur incarne un étudiant international arrivant à l'ISPA (Amiens) et doit
 - **Composants Dynamiques** : Utilisez la structure `currentLevel.mainMissionGroups[track]` pour récupérer un groupe, plutôt que d'écrire des vérifications statiques `if (track === 'a2-b1')`.
 
 ## 5. POINT DE REPRISE / PROCHAINE ÉTAPE
-**La prochaine évolution majeure est la construction du NIVEAU 3 : La Salle d'Arcade.**
-- Il s'agira de développer un composant React de mini-jeu "Jeu des Verbes" accessible depuis un nouveau lieu (`salle_jeu`).
-- Le `NARRATIVE_LEVELS[3]` (dans `narrativeLevels.ts`) possède déjà la structure "Track-Aware" prête pour accueillir les IDs des missions de boss/arcade.
+**La Salle d'Arcade (Niveau 3) a été implémentée.**
+- Le lieu `salle_jeu` ouvre l'interface `ArcadeHub`.
+- Le mini-jeu "Jeu des Verbes" est jouable nativement via le composant `JeuDesVerbes.tsx`.
+- Les missions boss pour valider l'arcade (Niveau 3) ont été créées dans `missions.ts`.
+**La prochaine évolution majeure sera l'implémentation des mécaniques du Niveau 4 ou l'ajout d'autres mini-jeux dans l'Arcade.**
 
 *(Fichier mis à jour automatiquement à chaque grande évolution architecturale)*

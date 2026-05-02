@@ -133,5 +133,29 @@ export const MISSION_GROUPS: Record<string, MissionGroup> = {
     unlocksWhenCompleted: [
       { type: 'advanceNarrativeLevel', level: 3 }
     ]
+  },
+  'arcade': {
+    id: 'arcade',
+    title: 'Arcade',
+    description: 'Battez le score requis dans la salle de jeu pour progresser.',
+    requiredCompletedCount: 1,
+    missionIds: [
+      'm_arcade_boss'
+    ],
+    unlocksWhenCompleted: [
+      { type: 'advanceNarrativeLevel', level: 4 }
+    ]
+  },
+  'arcade-a2-b1': {
+    id: 'arcade-a2-b1',
+    title: 'Arcade (A2/B1)',
+    description: 'Battez le score requis dans la salle de jeu pour progresser.',
+    requiredCompletedCount: 1,
+    missionIds: [
+      'm_arcade_boss_a2'
+    ],
+    unlocksWhenCompleted: [
+      { type: 'advanceNarrativeLevel', level: 4 }
+    ]
   }
 };

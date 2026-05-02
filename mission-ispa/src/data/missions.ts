@@ -1040,5 +1040,107 @@ export const MISSIONS: Mission[] = [
     tags: ["orientation", "A2", "node"],
     pedagogicalFocus: ["repérer une exigence académique"],
     unlocksWhenCompleted: [{ type: "advanceNarrativeLevel", level: 3 }]
+  },
+  
+  // ==========================================
+  // NIVEAU 3 - SALLE D'ARCADE
+  // ==========================================
+  {
+    id: "m_arcade_boss",
+    title: "Le Maître des Verbes",
+    level: "B2",
+    tracks: ["b1-b2"],
+    narrativeLevel: 3,
+    missionGroupId: "arcade",
+    locationId: "salle_jeu",
+    missionType: "singleChoice",
+    type: "dialogue",
+    difficulty: 5,
+    narrativePriority: "node",
+    isNodeMission: true,
+    narrativeContext: "Vous avez atteint un excellent score au Jeu des Verbes. Un étudiant plus âgé s'approche de vous.",
+    document: {
+      title: "Félicitations",
+      sourceType: "Conversation",
+      body: "Bravo ! Ton score est impressionnant. Tu as prouvé ta maîtrise de la conjugaison. Tu es maintenant prêt pour la suite !",
+      visualStyle: "note"
+    },
+    question: "Que répondez-vous ?",
+    choices: [
+      {
+        id: "c1",
+        text: "Merci, je suis prêt pour le Niveau 4 !",
+        isCorrect: true,
+        feedback: "Niveau 3 validé ! Vous allez passer au Niveau 4.",
+        effects: [{ target: "autonomy", amount: 10 }]
+      }
+    ],
+    tags: ["arcade", "boss"],
+    unlocksWhenCompleted: [{ type: "advanceNarrativeLevel", level: 4 }]
+  },
+  {
+    id: "m_arcade_boss_a2",
+    title: "Le Champion des Verbes",
+    level: "A2",
+    tracks: ["a2-b1"],
+    narrativeLevel: 3,
+    missionGroupId: "arcade-a2-b1",
+    locationId: "salle_jeu",
+    missionType: "singleChoice",
+    type: "dialogue",
+    difficulty: 3,
+    narrativePriority: "node",
+    isNodeMission: true,
+    narrativeContext: "Vous avez bien joué au Jeu des Verbes. Quelqu'un vous félicite.",
+    document: {
+      title: "Bien joué",
+      sourceType: "Conversation",
+      body: "Bravo ! Tu connais bien tes verbes. C'est très bien pour passer au niveau supérieur.",
+      visualStyle: "note"
+    },
+    question: "Que répondez-vous ?",
+    choices: [
+      {
+        id: "c1",
+        text: "Merci beaucoup !",
+        isCorrect: true,
+        feedback: "Niveau 3 validé ! Vous allez passer au Niveau 4.",
+        effects: [{ target: "autonomy", amount: 10 }]
+      }
+    ],
+    tags: ["arcade", "boss", "A2"],
+    unlocksWhenCompleted: [{ type: "advanceNarrativeLevel", level: 4 }]
+  },
+  {
+    id: "arcade-chute-des-mots-b2-temps-niveau-3",
+    title: "Calibration grammaticale de la borne B2",
+    level: "B2",
+    tracks: ["b1-b2"],
+    narrativeLevel: 3,
+    missionGroupId: "arcade",
+    locationId: "salle_jeu",
+    missionType: "singleChoice",
+    type: "dialogue",
+    difficulty: 5,
+    narrativePriority: "side",
+    isNodeMission: false,
+    narrativeContext: "La borne d'arcade de l'ISPA teste ta capacité à reconnaître rapidement les temps verbaux. Pour débloquer la suite du niveau 3, tu dois prouver que tu peux classer les formes verbales sans hésiter.",
+    document: {
+      title: "Chute des mots",
+      sourceType: "Borne d'arcade",
+      body: "Objectif affiché : Obtiens au moins 70 % de réussite dans Chute des mots — Temps verbaux B2.",
+      visualStyle: "note"
+    },
+    question: "Cette mission se valide automatiquement en jouant au mini-jeu Chute des mots depuis le Hub d'Arcade.",
+    choices: [
+      {
+        id: "c1",
+        text: "La borne valide ton profil B2. Les voyants passent au vert : tu peux poursuivre la mission.",
+        isCorrect: true,
+        feedback: "Bravo ! Vous avez atteint l'objectif.",
+        effects: [{ target: "autonomy", amount: 10 }]
+      }
+    ],
+    tags: ["arcade", "grammaire"]
   }
 ];

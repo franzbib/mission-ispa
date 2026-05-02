@@ -1,6 +1,9 @@
 import { ARCADE_GAMES } from '../../data/arcadeGames';
 import { useGameStore } from '../../engine/gameState';
 import { getBestScore, formatArcadeScore } from '../../engine/arcadeEngine';
+import JeuDesVerbes from './JeuDesVerbes';
+import ChuteDesMotsIntegration from './ChuteDesMotsIntegration';
+import { useState } from 'react';
 
 interface Props {
   onClose: () => void;
@@ -8,6 +11,15 @@ interface Props {
 
 export default function ArcadeHub({ onClose }: Props) {
   const gameState = useGameStore(state => state);
+  const [activeGameId, setActiveGameId] = useState<string | null>(null);
+
+  if (activeGameId === 'jeu-verbes') {
+    return <JeuDesVerbes gameId={activeGameId} onClose={() => setActiveGameId(null)} />;
+  }
+
+  if (activeGameId === 'chute-des-mots') {
+    return <ChuteDesMotsIntegration gameId={activeGameId} onClose={() => setActiveGameId(null)} />;
+  }
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
@@ -79,6 +91,14 @@ export default function ArcadeHub({ onClose }: Props) {
                       <span>Ouvrir le jeu</span>
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
                     </a>
+                  ) : game.status === 'internal' ? (
+                    <button 
+                      onClick={() => setActiveGameId(game.id)}
+                      className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white text-sm font-bold rounded-lg transition-colors flex items-center gap-2"
+                    >
+                      <span>Jouer</span>
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </button>
                   ) : (
                     <button disabled className="px-4 py-2 bg-slate-800 text-slate-500 text-sm font-bold rounded-lg cursor-not-allowed">
                       Bientôt disponible
