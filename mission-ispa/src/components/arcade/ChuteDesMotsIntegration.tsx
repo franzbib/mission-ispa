@@ -111,7 +111,7 @@ export default function ChuteDesMotsIntegration({ gameId, onClose }: Props) {
   };
 
   return (
-    <div className="flex flex-col h-full overflow-hidden bg-slate-900 rounded-xl relative">
+    <div className="flex flex-col min-h-[600px] overflow-hidden bg-slate-900 rounded-xl relative">
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-slate-800 bg-slate-900 z-10 shrink-0">
         <h3 className="text-xl font-bold text-rose-400">Chute des mots</h3>
